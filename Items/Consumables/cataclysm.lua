@@ -431,7 +431,7 @@ local cataclysms = {
     {
         name = "Stagnancy",
         pos = { x = 7, y = 1 },
-        downside_while_eternal = { "All owned Jokers become {C:purple}Eternal{}",
+        downside_while_eternal = { "All owned Jokers become {C:purple}Eternal{}" },
         after_rounds_use = {
             "Remove {C:purple}Eternal{} from all Jokers",
             "Create an {C:purple}Eternal{} {C:valk_exquisite}Exquisite{} Joker",
