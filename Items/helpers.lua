@@ -40,8 +40,6 @@ table.insert(SMODS.calculation_keys, 'taubp_extras')
 function quote(character)
     -- assume character is in quotes because i'm not a fucking idiot
     local quotes = {
-        lily = "thank you. that feels much better.",
-        lily2 = "i'm flattered you think i'm powerful",
         illena = "i'm here to help, nothing better to do.",
         quilla = "My name is pronounced \"Key-uh\"",
         quilla2 = "seriously, stop getting it wrong.",
