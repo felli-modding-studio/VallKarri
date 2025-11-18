@@ -230,7 +230,7 @@ SMODS.Joker {
     valk_artist = "Scraptake",
     config = { extra = { per = 2, rate = 50, echip = 1.15 } },
     loc_vars = function(self, info_queue, card)
-        local jkrs = G.jokers and #G.jokers.cards or 0
+        local jkrs = G.jokers and G.jokers.config.card_count or 0
         info_queue[#info_queue + 1] = G.P_CENTERS.e_valk_lordly
         local chosen_quote = quotes[math.random(1,#quotes)]
         return {

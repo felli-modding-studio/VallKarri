@@ -160,7 +160,7 @@ SMODS.Joker {
 
     calculate = function(self, card, context)
         
-        if context.end_of_round and #G.jokers == 1 then
+        if context.end_of_round and G.jokers.config.card_count == 1 then
             G.jokers:change_size(card.ability.extra.gain)
             card.ability.extra.slots = card.ability.extra.slots + card.ability.extra.gain
         end
@@ -229,7 +229,7 @@ SMODS.Joker {
     no_doe = true,
     calculate = function(self, card, context)
         
-        if context.setting_blind and #G.jokers.cards then
+        if context.setting_blind then
 
             local my_pos = nil
             for i = 1, #G.jokers.cards do

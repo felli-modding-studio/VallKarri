@@ -150,7 +150,7 @@ local cataclysms = {
                 joker:set_eternal_bypass(true)
             end
 
-            for i = 1, G.jokers.config.card_limit - #G.jokers do
+            for i = 1, G.jokers.config.card_limit - G.jokers.config.card_count do
                 SMODS.add_card({ set = "Joker", rarity = "Common" })
             end
         end,

@@ -48,7 +48,7 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if (context.end_of_round and context.main_eval and G.GAME.blind.boss) then
             if SMODS.pseudorandom_probability(card, "valk_raxd", card.ability.extra.num, card.ability.extra.den) then
-                if not (#G.jokers.cards >= G.jokers.config.card_limit) then
+                if G.jokers.config.card_count < G.jokers.config.card_limit then
                     local common = SMODS.create_card({ set = "Joker", stickers = { "eternal" }, rarity = 0 })
                     common:add_to_deck()
                     G.jokers:emplace(common)

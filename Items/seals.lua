@@ -97,7 +97,7 @@ SMODS.Seal {
         info_queue[#info_queue+1] = G.P_CENTERS.c_black_hole
     end,
     calculate = function(self, card, context)
-        if context.main_scoring and context.cardarea == G.hand and (#G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit) then
+        if context.main_scoring and context.cardarea == G.hand and (G.consumeables.config.card_count + G.GAME.consumeable_buffer < G.consumeables.config.card_limit) then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
             G.E_MANAGER:add_event(Event({
                 trigger = "before",

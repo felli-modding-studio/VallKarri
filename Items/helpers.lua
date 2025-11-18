@@ -225,14 +225,6 @@ function corrupt_text(text, amount, available_chars)
     return text
 end
 
-function jokercount()
-    if (G.jokers) then
-        return #G.jokers.cards
-    else
-        return 0
-    end
-end
-
 -- i take no credit for these functions, theyre just slightly modified
 -- versions of jenlib functions, as i don't like the text color which jenlib uses
 function expochips(txt)

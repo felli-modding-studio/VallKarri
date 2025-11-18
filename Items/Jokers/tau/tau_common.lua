@@ -444,7 +444,7 @@ SMODS.Joker {
     no_doe = true,
     blueprint_compat = true,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and context.other_card.base.id == 8 and #G.consumeables.cards < G.consumeables.config.card_limit then
+        if context.individual and context.cardarea == G.play and context.other_card:get_id() == 8 and G.consumeables.config.card_count < G.consumeables.config.card_limit then
             local tarot = SMODS.add_card({set = "Tarot"})
             Cryptid.manipulate(tarot, {value = card.ability.extra.vmult})
         end

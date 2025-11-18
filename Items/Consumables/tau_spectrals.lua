@@ -293,7 +293,7 @@ local tauspecs = {
         },
         config = { extra = { loss = 5 } },
         can_use = function(self, card)
-            return (#G.jokers.cards + G.GAME.joker_buffer) < G.jokers.config.card_limit
+            return (G.jokers.config.card_count + G.GAME.joker_buffer) < G.jokers.config.card_limit
         end,
         use = function(self, card, area, copier)
             G.GAME.joker_buffer = G.GAME.joker_buffer + 1
