@@ -44,7 +44,7 @@ SMODS.Joker {
         }
     },
     valk_artist = "mailingway",
-    config = { extra = { per = 3 } },
+    config = { extra = { per = 5 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.per } }
     end,
@@ -103,14 +103,14 @@ SMODS.Joker {
             "{C:attention}Enhanced{} card {C:attention}held-in-hand{}",
         }
     },
-    -- valk_artist = "mailingway",
+    valk_artist = "mailingway",
     config = { extra = { per = 6 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.per } }
     end,
     rarity = 1,
-    atlas = "phold",
-    pos = { x = 0, y = 1 },
+    atlas = "atlas2",
+    pos = { x = 5, y = 3 },
     cost = 3,
     blueprint_compat = true,
 
@@ -127,18 +127,18 @@ SMODS.Joker {
     loc_txt = {
         name = "Posh Joker",
         text = {
-            "{C:mult}+#1#{} Chips for every ",
+            "{C:chips}+#1#{} Chips for every ",
             "{C:attention}Enhanced{} card {C:attention}held-in-hand{}",
         }
     },
-    -- valk_artist = "mailingway",
+    valk_artist = "mailingway",
     config = { extra = { per = 25 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.per } }
     end,
     rarity = 1,
-    atlas = "phold",
-    pos = { x = 0, y = 1 },
+    atlas = "atlas2",
+    pos = { x = 6, y = 3 },
     cost = 3,
     blueprint_compat = true,
 

@@ -10,7 +10,7 @@
 // Values of this variable:
 // self.ARGS.send_to_shader[1] = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
 // self.ARGS.send_to_shader[2] = G.TIMERS.REAL
-extern PRECISION vec2 rgb;
+extern PRECISION vec2 temperature;
 
 extern PRECISION number dissolve;
 extern PRECISION number time;
@@ -29,71 +29,37 @@ extern PRECISION vec4 burn_colour_2;
 // Apply dissolve effect (when card is being "burnt", e.g. when consumable is used)
 vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv);
 
-vec4 RGBtoHSV(vec4 rgb)
-{
-    vec4 hsv;
-    float minVal = min(min(rgb.r, rgb.g), rgb.b);
-    float maxVal = max(max(rgb.r, rgb.g), rgb.b);
-    float delta = maxVal - minVal;
-
-    // Value
-    hsv.z = maxVal;
-
-    // Saturation
-    if (maxVal != 0.0)
-        hsv.y = delta / maxVal;
-    else {
-        // r = g = b = 0, s = 0, v is undefined
-        hsv.y = 0.0;
-        hsv.x = -1.0;
-        return hsv;
-    }
-
-    // Hue
-    if (rgb.r == maxVal)
-        hsv.x = (rgb.g - rgb.b) / delta;      // between yellow & magenta
-    else if (rgb.g == maxVal)
-        hsv.x = 2.0 + (rgb.b - rgb.r) / delta;  // between cyan & yellow
-    else
-        hsv.x = 4.0 + (rgb.r - rgb.g) / delta;  // between magenta & cyan
-
-    hsv.x = hsv.x * (1.0 / 6.0);
-    if (hsv.x < 0.0)
-        hsv.x += 1.0;
-
-    // Alpha
-    hsv.w = rgb.a;
-
-    return hsv;
-}
-vec4 HSVtoRGB(vec4 hsv) {
-    vec4 rgb;
-
-    float h = hsv.x * 6.0;
-    float c = hsv.z * hsv.y;
-    float x = c * (1.0 - abs(mod(h, 2.0) - 1.0));
-    float m = hsv.z - c;
-
-    if (h < 1.0) {
-        rgb = vec4(c, x, 0.0, hsv.a);
-    } else if (h < 2.0) {
-        rgb = vec4(x, c, 0.0, hsv.a);
-    } else if (h < 3.0) {
-        rgb = vec4(0.0, c, x, hsv.a);
-    } else if (h < 4.0) {
-        rgb = vec4(0.0, x, c, hsv.a);
-    } else if (h < 5.0) {
-        rgb = vec4(x, 0.0, c, hsv.a);
-    } else {
-        rgb = vec4(c, 0.0, x, hsv.a);
-    }
-
-    rgb.rgb += m;
-
-    return rgb;
+vec3 cap(vec3 base, float lowest, float highest) {
+    return vec3(max(min(base.r,lowest),base.r), max(min(base.g,lowest),base.g), max(min(base.b,lowest),base.b));
 }
 
-// taken from cryptid
+
+#define PI 3.14159265358979323846
+float rand(vec2 c){
+	return fract(sin(dot(c.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise(vec2 p, float freq ){
+	float unit = 1./freq;
+	vec2 ij = floor(p/unit);
+	vec2 xy = mod(p,unit)/unit;
+	//xy = 3.*xy*xy-2.*xy*xy*xy;
+	xy = .5*(1.-cos(PI*xy));
+	float a = rand((ij+vec2(0.,0.)));
+	float b = rand((ij+vec2(1.,0.)));
+	float c = rand((ij+vec2(0.,1.)));
+	float d = rand((ij+vec2(1.,1.)));
+	float x1 = mix(a, b, xy.x);
+	float x2 = mix(c, d, xy.x);
+	return mix(x1, x2, xy.y);
+}
+
+float falloff(float x, float lower, float upper) {
+    float falloff_scale = 0.2;
+    float power = 1;
+    float d = max(max(lower - x, x - upper), 0.0);
+    return exp(-pow(d / falloff_scale, power));
+}
 
 // This is what actually changes the look of card
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
@@ -105,38 +71,31 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     // For all vectors (vec2, vec3, vec4), .rgb is equivalent of .xyz, so uv.y == uv.g
     // .a is last parameter for vec4 (usually the alpha channel - transparency)
-    float potency = 3.+(sin(rgb.y)/2.);
+    float potency = 4.;
     float strength = 1.0;
+
+    vec3 mults = vec3(1.0, 1.0, 1.0);
     // vec2 norm = vec2(texture_coords.x / 71, texture_coords.y / 95);
-    vec4 mults = vec4(1);
-    mults.r = strength * potency * (1.-uv.x) * (1.-uv.y);
-    mults.g = strength * potency * (uv.y);
-    mults.b = strength * potency * (uv.x) * (1.-uv.y);
+    // mults.r = strength * potency * (1.-uv.x) * (1.-uv.y);
+    // mults.g = strength * potency * (uv.y);
+    // mults.b = strength * potency * (uv.x) * (1.-uv.y);
 
-    mults = RGBtoHSV(mults);
-    mults.x = mod(mults.x + rgb.y,1);
-    mults = HSVtoRGB(mults);
+    if (temperature.y > temperature.y*2) {
+        return vec4(0,0,0,0);
+    }
+    float scroll_speed = 0.002;
+    float n = noise(vec2(texture_coords.x, texture_coords.y+(temperature.y*scroll_speed*5)),150);
+    float vraise = 0;
+    mults.r = falloff(uv.y, vraise+(2.0/3.0), vraise+(1.0));
+    mults.g = falloff(uv.y, vraise+(1.0/3.0), vraise+(2.0/3.0)) * 0.9;
+    mults.b = falloff(uv.y, vraise+(0.0), vraise+(1.0/3.0));
 
-    vec4 hsv_value = RGBtoHSV(tex);
-    float colorfulness = (hsv_value.y*0.25) / (1 - hsv_value.z);
-    vec4 orig = tex;
-    float mul = 4;
-    orig *= 1 / mul;
+    // mults.r = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*2)),150);
+    // mults.g = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*7)),150);
+    // mults.b = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*13)),150);
+    tex *= vec4(mults*(1+n),1);
 
     
-
-    tex *= vec4(mults.rgb*(1.25-colorfulness), 1);
-    tex.r = max(tex.r, orig.r);
-    tex.g = max(tex.g, orig.g);
-    tex.b = max(tex.b, orig.b);
-
-    if (tex.r == orig.r) {tex.r *= mul;}
-    if (tex.g == orig.g) {tex.g *= mul;}
-    if (tex.b == orig.b) {tex.b *= mul;}
-
-
-    // tex.r = hsv_value.z;
-    // tex.g = hsv_value.y;
 
     // required
     return dissolve_mask(tex*colour, texture_coords, uv);

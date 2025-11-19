@@ -270,3 +270,65 @@ SMODS.Edition {
     end,
     in_shop = true,
 }
+
+SMODS.Shader {
+    key = "temperature",
+    path = "temperature.fs",
+}
+
+SMODS.Edition {
+    key = "iceandfire",
+    shader = "temperature",
+    loc_txt = {
+        name = "Ice and Fire",
+        label = "Ice and Fire",
+        text = {
+            "Retrigger the card to the left {C:attention}twice{}",
+            "{X:chips}X#1#{} Chips",
+            "{X:mult}X#1#{} Mult"
+        }
+    },
+    config = {x = 1.1},
+    calculate = function(self, card, context)
+        if (context.retrigger_joker_check and not context.retrigger_joker) and context.other_card == card.area.cards[vallkarri.index(card)-1] then
+            return {
+                repetitions = 2
+            }
+        end
+
+        if context.main_scoring and context.cardarea == G.play and card.area.cards[vallkarri.index(card)-1] then --this is dumb but i calculate it twice so that its not calculated in every context b.c. short circuit
+            local other_card = card.area.cards[vallkarri.index(card)-1]
+            for i=1,2 do SMODS.score_card(other_card, context) end
+        end
+
+        if (context.edition and context.cardarea == G.jokers and card.config.trigger) or
+            (context.main_scoring and context.cardarea == G.play)
+        then
+            SMODS.calculate_effect({xchips = card.edition.x, xmult = card.edition.x}, card)
+        end
+
+        if context.joker_main then
+            card.config.trigger = true
+        end
+
+        if context.after then
+            card.config.trigger = nil
+        end
+        
+    end,
+    weight = 2,
+    get_weight = function(self)
+        return G.GAME.edition_rate * self.weight
+    end,
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card and card.edition and card.edition.x or self.config.x
+            }
+        }
+    end,
+    in_pool = function(self, args)
+        return true
+    end,
+    in_shop = true,
+}

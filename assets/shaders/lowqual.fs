@@ -24,10 +24,24 @@ extern PRECISION vec2 image_details;
 extern bool shadow;
 extern PRECISION vec4 burn_colour_1;
 extern PRECISION vec4 burn_colour_2;
+#define PI    3.1415972
+#define SQRT2 0.70710678118
 
 // [Required] 
 // Apply dissolve effect (when card is being "burnt", e.g. when consumable is used)
 vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv);
+
+float DCTcoeff(vec2 k, vec2 x) {
+    return cos(PI*k.x*x.x)*cos(PI*k.y*x.y);
+}
+
+float round(float x) {
+    return floor(x+0.5);
+}
+
+vec4 round(vec4 x) {
+    return vec4(round(x.r),round(x.g),round(x.b),round(x.a));
+}
 
 // This is what actually changes the look of card
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
@@ -37,10 +51,49 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     // Position of a pixel within the sprite
 	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
 
-    // For all vectors (vec2, vec3, vec4), .rgb is equivalent of .xyz, so uv.y == uv.g
-    // .a is last parameter for vec4 (usually the alpha channel - transparency)
-    tex *= 1. + (0.*lowqual.y); // required to compile because i have to use lowqual somwhere
-    // uv is 0-1 on the sprite's position. good to know
+    if (lowqual.y > lowqual.y*2) {
+        // something divine has occured
+        tex = vec4(1,1,1,1);
+    }
+    float size = 1;
+
+    vec2 pixel_coords = texture_coords * love_ScreenSize.xy;
+    vec2 k = mod(pixel_coords, size) - 0.5;
+    vec2 K = (pixel_coords - 0.5) - k;
+
+    // float n = 0.001;
+    // k /= love_ScreenSize.xy*n;
+    // K /= love_ScreenSize.xy*n;
+    vec2 atlas_scale = 1 / image_details.xy;
+    
+
+    vec3 val = vec3(0.);
+    for (int x = 0; x < size; ++x) {
+        for (int y = 0; y < size; ++y) {
+            val += (Texel(texture, ((K+vec2(x,y)+.5)/love_ScreenSize.xy)).rgb) * DCTcoeff(k, (vec2(x,y)+0.5)/size) * (k.x<.5?SQRT2:1.) * (k.y<.5?SQRT2:1.);
+        }
+    }
+    int levels = 16;
+    int scale = 1;
+    int freq = 8;
+
+    tex = vec4(val / 4, tex.a);
+
+    tex *= scale;
+    tex = round(tex*(size*levels))/(size*levels);
+    tex /= scale;
+
+    vec3 val2 = vec3(0.);
+
+    for (int u = 0; u < freq; ++u) {
+        for (int v = 0; v < freq; ++v) {
+            val += Texel(texture, ((K+vec2(u,v)+0.5)/love_ScreenSize.xy)).rgb * DCTcoeff(vec2(u,v), (k+.5)/size) * (u==0?SQRT2:1.) * (v==0?SQRT2:1.);
+        }
+    }
+
+    // tex *= vec4(val,1);
+    tex = vec4(val,tex.a);
+
 
 
     // required

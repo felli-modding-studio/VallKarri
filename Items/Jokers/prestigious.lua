@@ -212,7 +212,11 @@ local quotes = {
     "are you my therapist",
     "pet me i dare you",
     "i'm just a dumb little cat",
-    "my real name is LΔʌvikα!"
+    "my real name is LΔʌvikα!",
+    "this is divine!",
+    "illena's my best friend break her heart i'll break your face",
+    "are you having fun?",
+    "...woof?",
 }
 
 SMODS.Joker {
