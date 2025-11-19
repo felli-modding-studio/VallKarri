@@ -217,6 +217,12 @@ local quotes = {
     "illena's my best friend break her heart i'll break your face",
     "are you having fun?",
     "...woof?",
+    "ugh, how long was i out for?",
+    "please be nice to me",
+    "this place is pretty dense",
+    "where are my meds",
+    "if i take off my halo i'll die!",
+    
 }
 
 SMODS.Joker {

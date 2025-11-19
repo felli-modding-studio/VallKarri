@@ -54,6 +54,7 @@ local aesthetic_cards = {
     { pos = { x = 0, y = 3 }, key = "e_valk_rgb", name = "scene!xD", artist = "Lil Mr. Slipstream" },
     { pos = { x = 1, y = 3 }, key = "e_valk_cosmic", name = "memphis", artist = "Lil Mr. Slipstream" },
     { pos = { x = 2, y = 3 }, key = "e_valk_glow", name = "arcadecore", artist = "Lil Mr. Slipstream" },
+    { pos = { x = 3, y = 3 }, key = "e_valk_lordly", name = "savior", hidden = true, soul_rate = 5},
     { pos = { x = 0, y = 1 }, key = "e_cry_glitched", name = "glitch", dep = {"Cryptid"} },
     { pos = { x = 1, y = 1 }, key = "e_cry_mosaic", name = "antique", dep = {"Cryptid"} },
     { pos = { x = 2, y = 1 }, key = "e_cry_oversat", name = "weirdcore", dep = {"Cryptid"} },
@@ -102,6 +103,9 @@ for _, edit in ipairs(aesthetic_cards) do
             self:use(card)
         end,
         dependencies = edit.dep,
+        hidden = edit.hidden,
+        soul_rate = edit.rate,
+        soul_set = edit.soul_set,
 
     }
 end
