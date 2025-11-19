@@ -284,8 +284,8 @@ SMODS.Edition {
         label = "Ice and Fire",
         text = {
             "Retrigger the card to the left {C:attention}twice{}",
-            "{X:chips}X#1#{} Chips",
-            "{X:mult}X#1#{} Mult"
+            "{X:chips,C:white}X#1#{} Chips",
+            "{X:mult,C:white}X#1#{} Mult"
         }
     },
     config = {x = 1.1},
