@@ -41,7 +41,7 @@ SMODS.Joker {
     loc_txt = {
         name = "Streetlight",
         text = {
-            "Gains {X:mult,C:white}X#1#{} Mult when a {C:attention}Mirrored{} card scores",
+            "Gains {X:mult,C:white}X#1#{} Mult when an {C:attention}Enhanced{} card scores",
             "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult){}",
         }
     },
@@ -58,22 +58,13 @@ SMODS.Joker {
     end,
 
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, "m_valk_mirrored") then
-            card.ability.extra.cur = card.ability.extra.cur + card.ability.extra.gain
-            quick_card_speak(card, "Upgraded!")
+        if context.individual and context.cardarea == G.play and next(SMODS.get_enhancements(context.other_card)) then
+            SMODS.scale_card(card, {ref_table = card.ability.extra, ref_value = "cur", scalar_value = "gain"})
         end
 
         if context.joker_main then
             return { xmult = card.ability.extra.cur }
         end
-    end,
-    in_pool = function()
-        for i, card in ipairs(G.playing_cards) do
-            if SMODS.has_enhancement(card, "m_valk_mirrored") then
-                return true
-            end
-        end
-        return false
     end
 
 }

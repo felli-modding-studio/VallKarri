@@ -3,8 +3,8 @@ SMODS.Joker {
     loc_txt = {
         name = "{C:blue}Blue{}",
         text = {
-            "Increase the values of all {C:attention}Food Jokers{} by {C:attention}X#1#{}",
-            "at end of round",
+            "Increase the values of all Jokers",
+            " by {C:attention}+#1#{} at end of round",
         }
     },
     valk_artist = "Scraptake",
@@ -12,7 +12,7 @@ SMODS.Joker {
         return {vars = {card.ability.extra.change}}
     end,
     
-    config = { extra = {change = 1.1} },
+    config = { extra = {change = 0.25} },
     rarity = 3,
     atlas = "main",
     pos = {x=5, y=3},
@@ -25,15 +25,8 @@ SMODS.Joker {
 
             for i,joker in ipairs(G.jokers.cards) do
                 
-                local res = Cryptid.safe_get(joker.config.center, "pools", "Food")
-                for j,pool in pairs(G.P_CENTER_POOLS) do
-                    for k,pooljoker in pairs(pool) do
-                        res = res or (pooljoker.key == joker.key)
-                    end
-                end
-
-                if res then
-                    Cryptid.manipulate(joker, {value=card.ability.extra.change})
+                if joker ~= card then
+                    Cryptid.manipulate(joker, {value = card.ability.extra.change, operation = "+"})
                 end
             
             end
