@@ -431,3 +431,130 @@ SMODS.Joker {
         end
     end
 }
+
+local messages = {
+    "???",
+    "uhh..?",
+    "wha..",
+    "oh",
+    "!!!",
+    "..hi",
+    "ehe",
+    "hiiii",
+    ">w<",
+    ":3"
+}
+
+local quotes = {
+    "i'm a real girl, right?",
+    "oh. hi!",
+    "you look familiar",
+    "do you want me to meow?",
+    "mrreow!",
+    "i'm sorry",
+    "wait, i'm kitty?",
+    "so many other people...",
+    "i feel overwhelmed",
+    "we're friends, right?",
+    "...",
+    "wear my halo? no.",
+    "is *this* your card?",
+    "i'm not the strongest here, that's illena!",
+    "i've killed!",
+    "are you my therapist",
+    "pet me i dare you",
+    "i'm just a dumb little cat",
+    "my real name is LΔʌvikα!",
+    "this is divine!",
+    "illena's my best friend break her heart i'll break your face",
+    "are you having fun?",
+    "...woof?",
+    "ugh, how long was i out for?",
+    "please be nice to me",
+    "this place is pretty dense",
+    "where are my meds",
+    "if i take off my halo i'll die!",
+    "smart thinking!",
+    
+    
+}
+
+SMODS.Joker {
+    key = "lily",
+    loc_txt = {
+        name = "{E:valk_floaty}Lily Felli",
+        text = {
+            "{X:dark_edition,C:white}^#1#{} Mult for each Joker owned",
+            "{C:attention}Lordly{} Edition is {C:attention}#3#{} times more common",
+            "{C:attention}Kitty{} Jokers each give {X:chips,C:white}X#4#{} Chips",
+            "{C:inactive}(Currently {X:dark_edition,C:white}^#2#{C:inactive} Mult)",
+            "{C:enhanced,s:0.7,E:1,f:6}#5#",
+        }
+    },
+    valk_artist = "Scraptake",
+    config = { extra = { per = 2, rate = 15, xchips = 2 } },
+    loc_vars = function(self, info_queue, card)
+        local jkrs = G.jokers and G.jokers.config.card_count or 0
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_valk_lordly
+        local chosen_quote = quotes[math.random(1,#quotes)]
+        return {
+            vars = {
+                card.ability.extra.per,
+                1 + (card.ability.extra.per * jkrs),
+                card.ability.extra.rate,
+                card.ability.extra.xchips,
+                chosen_quote,
+            }
+        }
+    end,
+    rarity = "valk_prestigious",
+    atlas = "main",
+    pos = { x = 0, y = 0 },
+    soul_pos = { x = 1, y = 0 },
+    no_doe = true,
+    cost = 500,
+    demicoloncompat = true,
+    pools = { ["Kitties"] = true },
+    calculate = function(self, card, context)
+        if context.joker_main or context.forcetrigger then
+            return {
+                emult = 1 + (card.ability.extra.per * #G.jokers.cards)
+            }
+        end
+
+        if context.other_joker and context.other_joker:is_kitty() then
+            return {
+                xchips = card.ability.extra.xchips
+            }
+        end
+
+        if context.amm_pet_card and card.ability.immutable.ready then
+        -- if context.amm_pet_card then
+            card.ability.immutable.ready = false
+            quick_card_speak(card, messages[math.min(card.ability.immutable.love, 10)])
+            card.ability.immutable.love = card.ability.immutable.love + 1
+        end
+
+        if context.end_of_round and context.main_eval and not card.ability.immutable.ready then
+            card.ability.immutable.ready = true
+        end
+    end,
+    has_halo = true,
+    lore = {
+        "Lily is a Fellinian Entropic Lord, this means",
+        "she was exposed to a lot of entropy, and eventually mutating her.",
+        "This allowed her to control entropy around her, similar to weak reality bending.",
+        "",
+        "As a person, Lily tries her best, but is inherently unstable mentally",
+        "due to the effects of entropy on a person's mental health.",
+        "",
+        "Her entropic lord powers allow for heightened senses,",
+        "so it doesn't affect her as much, but she can barely see!"
+    },
+    pronouns = "she_her",
+    add_to_deck = function(self, card, from_debuff)
+        card.ability.immutable = card.ability.immutable or {}
+        card.ability.immutable.love = 1
+        card.ability.immutable.ready = true
+    end
+}
