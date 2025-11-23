@@ -531,8 +531,8 @@ SMODS.Joker {
 SMODS.Joker {
     key = "take_your_age",
     rarity = 2,
-    atlas = "phold",
-    pos = { x = 0, y = 1 },
+    atlas = "atlas2",
+    pos = { x = 6, y = 4 },
     cost = 8,
     loc_txt = {
         name = "Take your age...",
@@ -542,7 +542,7 @@ SMODS.Joker {
             "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)",
         }
     },
-    valk_artist = nil,
+    valk_artist = "mailingway",
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.total / vallkarri.mods_installed(), card.ability.extra.total, card.ability.extra.gain / vallkarri.mods_installed() } }
     end,
@@ -565,8 +565,8 @@ SMODS.Joker {
 SMODS.Joker {
     key = "trump_casino",
     rarity = 2,
-    atlas = "phold",
-    pos = { x = 0, y = 1 },
+    atlas = "atlas2",
+    pos = { x = 5, y = 4 },
     cost = 8,
     loc_txt = {
         name = {"Joker starts", "giving out", "$2,222 to", "everyone!"},
@@ -575,7 +575,7 @@ SMODS.Joker {
             "Lose {C:money}$#2#{} when entering Shop",
         }
     },
-    valk_artist = nil,
+    valk_artist = "mailingway",
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.earn, card.ability.extra.loss } }
     end,
