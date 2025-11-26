@@ -192,19 +192,7 @@ function debug_print_antes()
     end
 end
 
-function corrupt_text(text, amount, available_chars)
-    local chars = (available_chars or "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[];:',.<>/?|")
-    -- amount is a 0-1 being a chance to replace each character with a rnd one
 
-    for i = 1, #text do
-        if math.random() < amount then
-            local rand_index = math.random(1, #chars)
-            local random_char = chars:sub(rand_index, rand_index)
-            text = text:sub(1, i - 1) .. random_char .. text:sub(i + 1)
-        end
-    end
-    return text
-end
 
 -- i take no credit for these functions, theyre just slightly modified
 -- versions of jenlib functions, as i don't like the text color which jenlib uses
