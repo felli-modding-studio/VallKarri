@@ -3,21 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-[[patches]]
-[patches.pattern]
-target = """=[SMODS _ "src/utils.lua"]"""
-pattern = "return 5"
-position = "before"
-payload = '''
-if next(SMODS.find_card('j_valk_tau_fingers')) then
-    return 3
-end
-if G.GAME.strush_override then
-    return G.GAME.strush_override
-end
-'''
-match_indent = true
-
 
 [[patches]]
 [patches.pattern]
@@ -103,18 +88,6 @@ target = 'engine/event.lua'
 position = 'after'
 pattern = "Event = Object:extend()"
 payload = "--dummy patch"
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-position = 'after'
-pattern = "local info_queue = {}"
-payload = '''
-if _c.tau and (desc_nodes == full_UI_table.main and not full_UI_table.name) then
-    info_queue[#info_queue + 1] = { set = "Other", key = "tauic_info" }
-end
-'''
 match_indent = true
 
 

@@ -39,7 +39,7 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     goal *= 1.2;
 
     //calculations
-    float square_wave = (amp / ((pow(abs(sqr), sqr * sin(freq * uv.x)))+1.)) - (amp / 2.); //sinful technique taught to me by tibetan monks
+    float square_wave = (amp / ((pow(abs(sqr), sqr * sin(freq * uv.x)))+1.)) - (amp / 2.); //sinful technique told to me by tibetan monks
     float sintime = (sin(gradient_badge.y + (pow(6.*uv.x,1.5)*square_wave) + (30.*uv.y)) + 1.) / 2.;
     sintime = ((sintime - mini) * (maxi - mini)) + mini; //change to between 0.8 and 1.2
     float factor_r = (sintime*goal.r); // i love being biased!

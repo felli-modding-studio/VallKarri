@@ -89,7 +89,6 @@ if Cryptid.pointerblistifytype then
     Cryptid.pointerblistifytype("rarity", "valk_quillagod", nil)
     Cryptid.pointerblistifytype("rarity", "valk_unsurpassed", nil)
     Cryptid.pointerblistifytype("rarity", "valk_prestigious", nil)
-    Cryptid.pointerblistifytype("rarity", "valk_tauic", nil)
     Cryptid.pointerblistifytype("rarity", "valk_exquisite", nil)
     Cryptid.pointerblistify("v_valk_alphaboosterator", nil)
     Cryptid.pointerblistify("v_valk_betaboosterator", nil)

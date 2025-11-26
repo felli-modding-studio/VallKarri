@@ -18,25 +18,6 @@ function days_since(year, month, day)
     return math.floor(diff / (60 * 60 * 24))
 end
 
-local old_indiv_effect = SMODS.calculate_individual_effect
-function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
-    local result_main = old_indiv_effect(effect, scored_card, key, amount, from_edition)
-
-    if (key == 'taubp_extras') and amount and (#amount > 0) then
-        local result = nil
-        for i = 1, #amount do
-            local part = SMODS.calculate_effect(amount[i], scored_card)
-            if part == true then
-                result = true
-            end
-        end
-        return result
-    end
-
-    return result_main
-end
-
-table.insert(SMODS.calculation_keys, 'taubp_extras')
 function quote(character)
     -- assume character is in quotes because i'm not a fucking idiot
     local quotes = {
@@ -780,28 +761,6 @@ function vallkarri.hashing_completed()
             end
         end
     }), "other")
-end
-
-function vallkarri.get_tau_probability_vars(cen, num, den)
-    local amount = SMODS.calculate_context({
-        valk_tau_probability_mod = true,
-        numerator = num,
-        denominator = den,
-        center =
-            cen
-    })
-    local fixed = SMODS.calculate_context({
-        valk_tau_fix_probability = true,
-        numerator = num,
-        denominator = den,
-        center =
-            cen
-    })
-    if (fixed and amount) then
-        amount.numerator = fixed.numerator or amount.numerator
-        amount.denominator = fixed.denominator or amount.denominator
-    end
-    return (amount and amount.numerator or num), (amount and amount.denominator or den)
 end
 
 vallkarri.sum_blacklist = {

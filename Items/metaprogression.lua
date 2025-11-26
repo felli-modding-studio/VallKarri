@@ -139,14 +139,6 @@ function create_UIBox_level_effects()
                                 },
 
                             },
-                            {
-                                n = G.UIT.R,
-                                config = { align = "cl", padding = 0.01, maxw = 2 },
-                                nodes = {
-                                    { n = G.UIT.T, config = { id = "tauic_chance_text", ref_table = G.GAME, ref_value = "tauic_chance_boost_disp", colour = G.C.GREEN, scale = text_scale * 0.85, shadow = true, prev_value = "nil" } },
-                                },
-
-                            },
                             
                         }
                     },
@@ -163,11 +155,8 @@ end
 function G.FUNCS.toggle_level_effects(e)
     local money = vallkarri.get_level_money_multiplier()
     local blindsize = vallkarri.get_level_blind_size_multiplier()
-    local tau = vallkarri.get_level_tauic_boost()
     G.GAME.money_mod_disp = "X" .. (type(money) == "number" and string.format("%.3f", money) or number_format(money)) .. " Money Gain"
     G.GAME.blindsize_mod_disp = "X" .. (type(blindsize) == "number" and string.format("%.3f", blindsize) or number_format(blindsize)) .. " Blind Size"
-    G.GAME.tauic_chance_boost_disp = "X" .. (type(tau) == "number" and string.format("%.3f", tau) or number_format(tau)) .. " Tauic Spawnrate"
-
 
 
     G.GAME.level_effects_open = not G.GAME.level_effects_open
@@ -449,10 +438,6 @@ function vallkarri.get_level_blind_size_multiplier(ante)
     ante = ante or G.GAME.round_resets.ante
     G.GAME.current_level = G.GAME.current_level or 1
     return math.min(G.GAME.current_level ^ 0.02, (G.GAME.round+1)^2)
-end
-
-function vallkarri.get_level_tauic_boost()
-    return to_number(math.min(G.GAME.current_level ^ 0.01, 3)) --3x boost max
 end
 
 function get_blind_amount(ante)

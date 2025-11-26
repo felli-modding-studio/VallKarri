@@ -113,35 +113,6 @@ return {
                     "itself when used"
                 }
             },
-            tauic_info = {
-                name = "Tauic Variant",
-                text = {
-                    "This card has a",
-                    "{C:valk_tauic}Tauic{} variant",
-                }
-            },
-            tau_number = {
-                name = "Tau",
-                text = {
-                    "{C:valk_tauic,s:1.25}6.28318530718{}"
-                }
-            },
-
-            fibonacci_sequence = {
-                name = "Fibonacci Sequence",
-                text = {
-                    "Fib(N) = Fib(N-1) + Fib(N-2)",
-                    "Fib(N) = N, if N <= 1"
-                }
-            },
-
-            valk_transformative = {
-                name = "Transformative",
-                text = {
-                    "Converts into its {C:valk_tauic}Tauic{} variant",
-                    "in {C:attention}#1#{} rounds",
-                }
-            }
 
         },
         Sleeve = {
@@ -238,9 +209,6 @@ return {
             a_valk_eechips = "^^#1# Chips",
             a_valk_eemult = "^^#1# Mult",
         },
-        labels = {
-            valk_transformative = "Transformative",
-        }
 
     }
 }

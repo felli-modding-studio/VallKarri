@@ -134,21 +134,8 @@ function Game:start_run(args)
         end
     end
 
-    G.GAME.tau_increase = 0
-    G.GAME.base_tau_replace = 150
-    G.GAME.tau_replace = G.GAME.base_tau_replace
     if not G.GAME.ante_config and config_reset then
         config_reset()
-    end
-
-    --1 in 100 to replace when you have tauist
-    -- keeping these settings so that i can make a deck focused around tauics later on
-
-    if G.GAME.selected_back.effect.config.tauic_deck then
-        G.GAME.base_tau_replace = G.GAME.base_tau_replace / 10
-        G.GAME.tau_replace = G.GAME.base_tau_replace
-        G.GAME.tau_increase = 2
-        vallkarri.add_effective_ante_mod(G.GAME.selected_back.effect.config.eeante, "^")
     end
 
 
@@ -540,29 +527,6 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 
     local out = fakecreate(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
 
-    if out.config.center.tau then
-        local denominator = G.GAME.tau_replace
-        local numerator = (((vallkarri.get_level_tauic_boost and vallkarri.get_level_tauic_boost()) or 1))
-
-        numerator, denominator = vallkarri.get_tau_probability_vars(out.config.center.key, numerator, denominator)
-
-        denominator = denominator * #G.P_CENTERS[out.config.center.tau].bases
-
-        local roll = (pseudorandom("valk_roll_tauic") * (denominator - 1)) + 1
-        if roll <= numerator then
-            out:set_ability(out.config.center.tau)
-            out:juice_up()
-            play_sound("explosion_release1", 1, 3)
-            G.GAME.tau_replace = G.GAME.base_tau_replace
-        else
-            -- play_sound("tarot1")
-            out:juice_up()
-            -- print("before: " .. G.GAME.tau_replace)
-            G.GAME.tau_replace = G.GAME.tau_replace - G.GAME.tau_increase
-            -- print("after: " .. G.GAME.tau_replace)
-        end
-    end
-
 
     if G.GAME.vallkarri and G.GAME.vallkarri.spawn_multipliers and G.GAME.vallkarri.spawn_multipliers[out.config.center.key] then
         Cryptid.manipulate(out, { value = G.GAME.vallkarri.spawn_multipliers[out.config.center.key] })
@@ -682,17 +646,6 @@ function SMODS.injectItems(...)
     smodsinject(...)
 
     for key, card in pairs(G.P_CENTERS) do
-        if card.bases then
-            G.P_CENTERS[key].is_tau = true
-            for i, base in ipairs(card.bases) do
-                -- print(base)
-                G.P_CENTERS[base].tau = key
-            end
-        end
-
-        if (card.bases or card.is_tau) and (not vallkarri.config.tau_collection) then
-            G.P_CENTERS[key].no_collection = true
-        end
 
         if card.valk_artist then
             vallkarri.credited_artists[card.valk_artist] = vallkarri.credited_artists[card.valk_artist] or {}

@@ -1,13 +1,5 @@
 vallkarri.calculate = function(self, context)
     vallkarri.refresh_ante_diff()
-    local s_card = G.deck.cards[1] or G.deck
-    
-    local cen = G.P_CENTERS[context.center]
-    if context.valk_tau_probability_mod and cen and cen.hidden then
-        return {
-            numerator = context.numerator * 10
-        }
-    end
 
     if context.final_scoring_step then
         for i = 1, #G.GAME.tags do
@@ -35,7 +27,7 @@ vallkarri.calculate = function(self, context)
             end
         end
 
-        SMODS.calculate_effect(effects, s_card)
+        SMODS.calculate_effect(effects, G.deck.cards[1] or G.deck)
 
     end
 end

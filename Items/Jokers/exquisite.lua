@@ -207,7 +207,8 @@ SMODS.Joker {
     end
 }
 
-SMODS.Joker {
+-- SMODS.Joker {
+local scraptake = { --temp disabled due to tauics being moved to another mod
     key = "scraptake",
     loc_txt = {
         name = "Scraptake",

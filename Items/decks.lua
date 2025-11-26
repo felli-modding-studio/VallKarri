@@ -23,49 +23,6 @@ SMODS.Back {
 }
 
 SMODS.Back {
-    key = "tauic",
-    loc_txt = {
-        name = "Tauic Deck",
-        text = {
-            "{C:valk_tauic}Tauic{} Jokers are {C:attention}thrice{} as common",
-            "for each {C:valk_tauic}non-Tauic{} Joker owned",
-            "{C:attention}+#1#{} Effective Ante when buying",
-            "a {C:valk_tauic}Tauic{} Joker",
-            -- "{C:attention}X3{} Blind Size",
-        }
-    },
-    valk_artist = "Scraptake",
-    config = { eante = 2 },
-    pos = {x=7, y=9},
-    atlas = "main",
-    loc_vars = function(self, info_queue, card)
-        return {
-            vars = {
-                self.config.eante
-            }
-        }
-    end,
-    calculate = function(self, back, context)
-        if context.valk_tau_probability_mod then
-
-            local count = 0
-            for _,joker in pairs(G.jokers.cards) do
-                count = count + (joker.config.center.tau and 1 or 0) 
-            end
-
-            return {
-                denominator = context.denominator / (3 ^ count)
-            }
-        end
-
-        if context.buying_card and context.card.config.center.is_tau then
-            back:juice_up()
-            vallkarri.add_effective_ante_mod(self.config.eante, "+")
-        end
-    end
-}
-
-SMODS.Back {
     key = "sunbeam",
     loc_txt = {
         name = "Sunbeam Deck",
