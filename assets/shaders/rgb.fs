@@ -93,6 +93,57 @@ vec4 HSVtoRGB(vec4 hsv) {
     return rgb;
 }
 
+#define PI 3.14159265358979323846
+float rand(vec2 c){
+	return fract(sin(dot(c.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise(vec2 p, float freq ){
+	float unit = 1./freq;
+	vec2 ij = floor(p/unit);
+	vec2 xy = mod(p,unit)/unit;
+	//xy = 3.*xy*xy-2.*xy*xy*xy;
+	xy = .5*(1.-cos(PI*xy));
+	float a = rand((ij+vec2(0.,0.)));
+	float b = rand((ij+vec2(1.,0.)));
+	float c = rand((ij+vec2(0.,1.)));
+	float d = rand((ij+vec2(1.,1.)));
+	float x1 = mix(a, b, xy.x);
+	float x2 = mix(c, d, xy.x);
+	return mix(x1, x2, xy.y);
+}
+
+float pNoise(vec2 p, int res){
+	float persistance = .5;
+	float n = 0.;
+	float normK = 0.;
+	float f = 4.;
+	float amp = 1.;
+	int iCount = 0;
+	for (int i = 0; i<50; i++){
+		n+=amp*noise(p, f);
+		f*=2.;
+		normK+=amp;
+		amp*=persistance;
+		if (iCount == res) break;
+		iCount++;
+	}
+	float nf = n/normK;
+	return nf*nf*nf*nf;
+}
+
+vec2 shift(vec2 pos, float x, float y) {
+    return vec2(pos.x+x, pos.y+y);
+}
+
+float pos_sin(float i) {
+    return (1+sin(i))/2;
+}
+
+extern PRECISION vec2 mouse_screen_pos;
+extern PRECISION float hovering;
+extern PRECISION float screen_scale;
+
 // taken from cryptid
 
 // This is what actually changes the look of card
@@ -108,31 +159,24 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     float potency = 3.+(sin(rgb.y)/2.);
     float strength = 1.0;
     // vec2 norm = vec2(texture_coords.x / 71, texture_coords.y / 95);
-    vec4 mults = vec4(1);
-    mults.r = strength * potency * (1.-uv.x) * (1.-uv.y);
-    mults.g = strength * potency * (uv.y);
-    mults.b = strength * potency * (uv.x) * (1.-uv.y);
+    vec4 col = RGBtoHSV(vec4(1,0,0,tex.a));
+    float avg = tex.r+tex.b+tex.g;
+    avg /= 3;
 
-    mults = RGBtoHSV(mults);
-    mults.x = mod(mults.x + rgb.y,1);
-    mults = HSVtoRGB(mults);
+    float noise_value = pNoise(screen_coords*0.01, 1)*2;
+    col.r = mod((screen_coords.x*0.01)+(noise_value*0.7), 1);
+    col.g = 1 - pNoise(shift(screen_coords*0.01, rgb.y*0.05, 0),1);
+    col.b = avg*1.5;
 
-    vec4 hsv_value = RGBtoHSV(tex);
-    float colorfulness = (hsv_value.y*0.25) / (1 - hsv_value.z);
-    vec4 orig = tex;
-    float mul = 4;
-    orig *= 1 / mul;
-
+    if (avg < 1) {
+        tex = HSVtoRGB(col);
+        // float m = 1/20.;
+        // float timesin = sin(rgb.y)*100;
+        // float timecos = cos(rgb.y*2)*100;
+        // tex.rg = somscreen_coords;
+        // tex.gb = screen_coords;
+    }
     
-
-    tex *= vec4(mults.rgb*(1.25-colorfulness), 1);
-    tex.r = max(tex.r, orig.r);
-    tex.g = max(tex.g, orig.g);
-    tex.b = max(tex.b, orig.b);
-
-    if (tex.r == orig.r) {tex.r *= mul;}
-    if (tex.g == orig.g) {tex.g *= mul;}
-    if (tex.b == orig.b) {tex.b *= mul;}
 
 
     // tex.r = hsv_value.z;
@@ -181,9 +225,7 @@ vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv)
 }
 
 // for transforming the card while your mouse is on it
-extern PRECISION vec2 mouse_screen_pos;
-extern PRECISION float hovering;
-extern PRECISION float screen_scale;
+
 
 #ifdef VERTEX
 vec4 position( mat4 transform_projection, vec4 vertex_position )

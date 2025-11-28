@@ -49,8 +49,6 @@ vec2 shift(vec2 pos, float x, float y) {
     return vec2(pos.x+x, pos.y+y);
 }
 
-
-
 float pos_sin(float i) {
     return (1+sin(i))/2;
 }
