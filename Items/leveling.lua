@@ -301,7 +301,7 @@ function vallkarri.metacalc(context)
     if context.end_of_round and context.main_eval then
         local overscore_margin = to_big(G.GAME.chips) - to_big(G.GAME.blind.chips)
         G.GAME.hypercap_level = G.GAME.hypercap_level or 1
-        vallkarri.mod_xp(math.min(vallkarri.hypercap(overscore_margin, vallkarri.level_to_xp(G.GAME.current_level+G.GAME.hypercap_level) ^ 0.5), G.GAME.blind.chips^0.9))
+        vallkarri.mod_xp(math.min(vallkarri.hypercap(overscore_margin, G.GAME.current_level^2))
     end
 end
 
