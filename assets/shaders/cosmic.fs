@@ -25,6 +25,112 @@ extern bool shadow;
 extern PRECISION vec4 burn_colour_1;
 extern PRECISION vec4 burn_colour_2;
 
+#define PI 3.14159265358979323846
+float rand(vec2 c){
+	return fract(sin(dot(c.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise(vec2 p, float freq ){
+	float unit = 1./freq;
+	vec2 ij = floor(p/unit);
+	vec2 xy = mod(p,unit)/unit;
+	//xy = 3.*xy*xy-2.*xy*xy*xy;
+	xy = .5*(1.-cos(PI*xy));
+	float a = rand((ij+vec2(0.,0.)));
+	float b = rand((ij+vec2(1.,0.)));
+	float c = rand((ij+vec2(0.,1.)));
+	float d = rand((ij+vec2(1.,1.)));
+	float x1 = mix(a, b, xy.x);
+	float x2 = mix(c, d, xy.x);
+	return mix(x1, x2, xy.y);
+}
+
+vec2 shift(vec2 pos, float x, float y) {
+    return vec2(pos.x+x, pos.y+y);
+}
+
+
+
+float pos_sin(float i) {
+    return (1+sin(i))/2;
+}
+
+float get_stars(vec2 uv) {
+    return pow(noise(shift(uv,cosmic.y*0.01,0), 35),10);
+}
+
+vec4 RGBtoHSV(vec4 rgb)
+{
+    vec4 hsv;
+    float minVal = min(min(rgb.r, rgb.g), rgb.b);
+    float maxVal = max(max(rgb.r, rgb.g), rgb.b);
+    float delta = maxVal - minVal;
+
+    // Value
+    hsv.z = maxVal;
+
+    // Saturation
+    if (maxVal != 0.0)
+        hsv.y = delta / maxVal;
+    else {
+        // r = g = b = 0, s = 0, v is undefined
+        hsv.y = 0.0;
+        hsv.x = -1.0;
+        return hsv;
+    }
+
+    // Hue
+    if (rgb.r == maxVal)
+        hsv.x = (rgb.g - rgb.b) / delta;      // between yellow & magenta
+    else if (rgb.g == maxVal)
+        hsv.x = 2.0 + (rgb.b - rgb.r) / delta;  // between cyan & yellow
+    else
+        hsv.x = 4.0 + (rgb.r - rgb.g) / delta;  // between magenta & cyan
+
+    hsv.x = hsv.x * (1.0 / 6.0);
+    if (hsv.x < 0.0)
+        hsv.x += 1.0;
+
+    // Alpha
+    hsv.w = rgb.a;
+
+    return hsv;
+}
+
+vec4 HSVtoRGB(vec4 hsv) {
+    vec4 rgb;
+
+    float h = hsv.x * 6.0;
+    float c = hsv.z * hsv.y;
+    float x = c * (1.0 - abs(mod(h, 2.0) - 1.0));
+    float m = hsv.z - c;
+
+    if (h < 1.0) {
+        rgb = vec4(c, x, 0.0, hsv.a);
+    } else if (h < 2.0) {
+        rgb = vec4(x, c, 0.0, hsv.a);
+    } else if (h < 3.0) {
+        rgb = vec4(0.0, c, x, hsv.a);
+    } else if (h < 4.0) {
+        rgb = vec4(0.0, x, c, hsv.a);
+    } else if (h < 5.0) {
+        rgb = vec4(x, 0.0, c, hsv.a);
+    } else {
+        rgb = vec4(c, 0.0, x, hsv.a);
+    }
+
+    rgb.rgb += m;
+
+    return rgb;
+}
+
+vec4 hueshift(vec4 color, float amount) {
+    color = RGBtoHSV(color);
+    color.r = mod(amount+color.r, 1);
+    color = HSVtoRGB(color);
+    return color;
+}
+
 // [Required] 
 // Apply dissolve effect (when card is being "burnt", e.g. when consumable is used)
 vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv);
@@ -39,13 +145,63 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     // For all vectors (vec2, vec3, vec4), .rgb is equivalent of .xyz, so uv.y == uv.g
     // .a is last parameter for vec4 (usually the alpha channel - transparency)
-    float half_pi = 3.14159 / 2.;
-    float sintime = (1.+(sin(cosmic.y+(uv.y*half_pi))+1.)/2.) * 1.5;
-    
+    if (cosmic.y > cosmic.y * 2) {
+        tex = vec4(0);
+    }
 
-    tex.r = tex.r * (sintime * 0.3);
-    tex.g = tex.g * (1.0 / (sintime * 0.75));
-    tex.b = tex.b * (sintime * 0.80);
+    // tex.b += noise(uv, 2);
+
+    float dampen_speed = 3;
+    vec4 blue_layer = vec4(0,0,noise(shift(uv,0,cosmic.y/dampen_speed), 3.0)/2,0);
+    float purple_strength = noise(shift(uv,cosmic.y/dampen_speed,0), 2.0);
+    vec4 purple_layer = vec4(purple_strength*0.3,0,purple_strength*0.8,0);
+    float star_strength = 0;
+    float orthoavg = 0;
+    float diagavg = 0;
+    float scale = 5;
+    int pixels_looped = 0;
+    vec2 pixel = vec2(1,1) / texture_details.zw;
+
+    for (float i = -scale; i <= scale; i++) {
+        orthoavg += get_stars(shift(uv,pixel.x*i,0));
+        pixels_looped++;
+    }
+
+    for (float j = -scale; j <= scale; j++) {
+        orthoavg += get_stars(shift(uv,0,pixel.y*j));
+        pixels_looped++;
+    }
+
+    int circle_pixels = 0;
+    for (float i = -scale; i <= scale; i++) {
+        for (float j = -scale; j <= scale; j++) {
+            diagavg += get_stars(shift(uv,pixel.x*i,pixel.y*j));
+            circle_pixels++;
+        }
+    }
+
+    orthoavg /= pixels_looped;
+    circle_pixels /= 3;
+
+    star_strength = (orthoavg*5) + (diagavg/circle_pixels);
+
+
+    vec4 star_layer = vec4(star_strength);
+    star_layer.a = 0;
+    float ex = 1.5;
+    
+    tex = vec4(pow(tex.x,ex),pow(tex.y,ex),pow(tex.z,ex),tex.w);
+    tex = RGBtoHSV(tex);
+    tex.z = 0.9 - tex.z;
+    tex = HSVtoRGB(tex);
+    tex += blue_layer;
+    tex += purple_layer;
+    tex += star_layer;
+    float value = RGBtoHSV(tex).z;
+
+    tex += (purple_layer+blue_layer)*(0.25*value);
+
+
 
     // required
     return dissolve_mask(tex*colour, texture_coords, uv);

@@ -15,7 +15,7 @@ local files = {
     "Items/recommended.lua",
     "Items/ante.lua",
     "Items/hands.lua",
-    "Items/metaprogression.lua",
+    "Items/leveling.lua",
     "Items/Consumables/spectral.lua",
     "Items/Consumables/tarot.lua",
     "Items/Consumables/planetoids.lua",

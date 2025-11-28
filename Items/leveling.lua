@@ -344,11 +344,11 @@ function vallkarri.animationless_mod_xp(mod)
     G.GAME.current_xp = math.floor(G.GAME.current_xp)
     G.GAME.required_xp = math.floor(G.GAME.required_xp)
 
-    if to_big(G.GAME.current_xp) > to_big(G.GAME.required_xp) * 16 then
-        vallkarri.mod_level(math.floor(vallkarri.xp_to_level(G.GAME.current_xp +
-        vallkarri.level_to_xp(G.GAME.current_level)) - G.GAME.current_level))
-        G.GAME.current_xp = 0
-    end
+    -- if to_big(G.GAME.current_xp) > to_big(G.GAME.required_xp) * 16 then
+    --     vallkarri.mod_level(math.floor(vallkarri.xp_to_level(G.GAME.current_xp +
+    --     vallkarri.level_to_xp(G.GAME.current_level)) - G.GAME.current_level))
+    --     G.GAME.current_xp = 0
+    -- end
 
 
     while to_big(G.GAME.current_xp) >= to_big(G.GAME.required_xp) do
@@ -362,32 +362,12 @@ function vallkarri.xp_safety_check()
     G.GAME.current_level = to_big(G.GAME.current_level) or 1
 end
 
-function vallkarri.xp_to_level(x)
-    return to_big(math.sqrt(0.25 + (x / 50)) - 0.5)
-end
-
-function vallkarri.level_to_xp(l)
-    return to_big(50 * (l + (l ^ 2)))
-end
-
 function vallkarri.xp_required(level)
     level = to_number(level)
 
     local req = 100 * level
 
     return to_number(req)
-end
-
-local caevsttx = card_eval_status_text
-function card_eval_status_text(card, eval_type, amt, percent, dir, extra)
-    caevsttx(card, eval_type, amt, percent, dir, extra)
-
-    if not card then return end
-    if not card.area then return end
-    local ind = find_index(card, card.area.cards)
-    if ind then
-        vallkarri.mod_xp((ind^0.5)*5, nil, nil, card)
-    end
 end
 
 local easemoneyhook = ease_dollars
@@ -477,11 +457,6 @@ SMODS.Voucher {
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.xp } }
     end,
-
-    in_pool = function()
-        return G.GAME.round_resets.ante > amt * (2 ^ 1)
-    end,
-
     redeem = function(self, card)
         vallkarri.add_xp_modifier(function(x, t) return x * card.ability.extra.xp end)
     end,
@@ -509,11 +484,6 @@ SMODS.Voucher {
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.xp } }
     end,
-
-    in_pool = function()
-        return G.GAME.round_resets.ante > amt * (2 ^ 2)
-    end,
-
     redeem = function(self, card)
         vallkarri.add_xp_modifier(function(x, t) return x ^ card.ability.extra.xp end)
     end,
@@ -540,11 +510,6 @@ SMODS.Voucher {
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.xp } }
     end,
-
-    in_pool = function()
-        return G.GAME.round_resets.ante > amt * (2 ^ 3)
-    end,
-
     redeem = function(self, card)
         vallkarri.add_xp_modifier(function(x, t) return x ^ card.ability.extra.xp end)
     end,
