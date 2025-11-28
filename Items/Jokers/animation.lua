@@ -26,7 +26,7 @@ SMODS.Joker {
             for i,joker in ipairs(G.jokers.cards) do
                 
                 if joker ~= card then
-                    Cryptid.manipulate(joker, {value = card.ability.extra.change, operation = "+"})
+                    Cryptid.manipulate(joker, {value = card.ability.extra.change, type = "+"})
                 end
             
             end
