@@ -24,6 +24,7 @@ extern PRECISION vec2 image_details;
 extern bool shadow;
 extern PRECISION vec4 burn_colour_1;
 extern PRECISION vec4 burn_colour_2;
+extern PRECISION vec2 screen_size;
 
 #define PI 3.14159265358979323846
 float rand(vec2 c){
@@ -53,9 +54,7 @@ float pos_sin(float i) {
     return (1+sin(i))/2;
 }
 
-float get_stars(vec2 uv) {
-    return pow(noise(shift(uv,cosmic.y*0.01,0), 35),10);
-}
+
 
 vec4 RGBtoHSV(vec4 rgb)
 {
@@ -129,6 +128,10 @@ vec4 hueshift(vec4 color, float amount) {
     return color;
 }
 
+float get_stars(vec2 uv) {
+    return pow(noise(shift(uv,cosmic.y*0.01,0), 35),10);
+}
+
 // [Required] 
 // Apply dissolve effect (when card is being "burnt", e.g. when consumable is used)
 vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv);
@@ -141,6 +144,10 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     // Position of a pixel within the sprite
 	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
 
+    vec2 screen = screen_coords / screen_size;
+
+    
+
     // For all vectors (vec2, vec3, vec4), .rgb is equivalent of .xyz, so uv.y == uv.g
     // .a is last parameter for vec4 (usually the alpha channel - transparency)
     if (cosmic.y > cosmic.y * 2) {
@@ -148,6 +155,14 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     }
 
     // tex.b += noise(uv, 2);
+    float ex = 1.5;
+    tex = vec4(pow(tex.x,ex),pow(tex.y,ex),pow(tex.z,ex),tex.w);
+    tex = RGBtoHSV(tex);
+    tex.z = 0.9 - tex.z;
+    // -0.1 to 0.9
+    float v = 0.9 - tex.z;
+    uv += screen*(v*2);
+    tex = HSVtoRGB(tex);
 
     float dampen_speed = 3;
     vec4 blue_layer = vec4(0,0,noise(shift(uv,0,cosmic.y/dampen_speed), 3.0)/2,0);
@@ -186,12 +201,9 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     vec4 star_layer = vec4(star_strength);
     star_layer.a = 0;
-    float ex = 1.5;
     
-    tex = vec4(pow(tex.x,ex),pow(tex.y,ex),pow(tex.z,ex),tex.w);
-    tex = RGBtoHSV(tex);
-    tex.z = 0.9 - tex.z;
-    tex = HSVtoRGB(tex);
+    
+    
     tex += blue_layer;
     tex += purple_layer;
     tex += star_layer;

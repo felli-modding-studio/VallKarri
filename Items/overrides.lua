@@ -35,6 +35,9 @@ Game.main_menu = function(change_context) --code heavily adapted from cryptid
                     end
                 end
 
+                -- ease_colour(G.C.BLUE, HEX("FFA024"))
+                -- ease_colour(G.C.RED, HEX("FF5890"))
+
                 vallkarri.initialize_splashtext()
                 return true
             end,

@@ -4,7 +4,12 @@
 
 SMODS.Shader {
     key = "cosmic",
-    path = "cosmic.fs"
+    path = "cosmic.fs",
+    send_vars = function(self, sprite, card)
+        return {
+            screen_size = {love.graphics.getWidth(), love.graphics.getHeight()}
+        }
+    end
 }
 
 SMODS.Edition {
@@ -43,7 +48,8 @@ SMODS.Edition {
     end,
     in_pool = function(self, args)
         return true
-    end
+    end,
+    
 }
 
 SMODS.Shader {
