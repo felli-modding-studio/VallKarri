@@ -250,7 +250,7 @@ SMODS.Consumable {
 
     use = function(self, card, area, copier)
         for i, joker in ipairs(G.jokers.cards) do
-            if SMODS.pseudorandom_probability(card, 'valk_gameshow', 1, joker.sell_cost) then
+            if SMODS.pseudorandom_probability(card, 'valk_gameshow', 1, math.abs(joker.sell_cost)) then
                 vallkarri.do_while_flipped({ joker }, function(c)
                     Cryptid.manipulate(c, { value = c.sell_cost })
                 end)
