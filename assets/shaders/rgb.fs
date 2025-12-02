@@ -168,14 +168,9 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     col.g = 1 - pNoise(shift(screen_coords*0.01, rgb.y*0.05, 0),1);
     col.b = avg*1.5;
 
-    if (avg < 1) {
-        tex = HSVtoRGB(col);
-        // float m = 1/20.;
-        // float timesin = sin(rgb.y)*100;
-        // float timecos = cos(rgb.y*2)*100;
-        // tex.rg = somscreen_coords;
-        // tex.gb = screen_coords;
-    }
+    float val = RGBtoHSV(tex).z;
+
+    tex = ((1 - val) * HSVtoRGB(col)) + ((val) * tex);
     
 
 
