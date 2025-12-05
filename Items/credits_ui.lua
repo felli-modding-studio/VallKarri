@@ -40,7 +40,6 @@ function vallkarri.credits_ui_def()
                             { n = G.UIT.R, config = {}, nodes = { { n = G.UIT.T, config = { text = "Pangaea - SFX", colour = colours.shader, scale = text_scale, shadow = true, align = "tm" } } } },
                             { n = G.UIT.R, config = {}, nodes = { { n = G.UIT.T, config = { text = "MVBit - SFX", colour = colours.shader, scale = text_scale, shadow = true, align = "tm" } } } },
                             { n = G.UIT.R, config = {}, nodes = { { n = G.UIT.T, config = { text = "gudusername - Deck Skin", colour = colours.shader, scale = text_scale, shadow = true, align = "tm" } } } },
-                            { n = G.UIT.R, config = {}, nodes = { { n = G.UIT.T, config = { text = "Crabus - emotional support", colour = colours.shader, scale = text_scale, shadow = true, align = "tm" } } } },
                         }
                     },
                 }
