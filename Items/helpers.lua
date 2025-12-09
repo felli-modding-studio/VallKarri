@@ -128,9 +128,11 @@ function vallkarri.multiply_all_hand_scaling(amt)
     end
 end
 
-function table:vcontains(table, value)
-    for i, j in ipairs(table) do
-        if (j == value) then return true end
+function vallkarri.contains(haystack, needle) --variable names are a reference to the hit mod jenlib
+    for _,value in pairs(haystack) do
+        if value == needle then
+            return true
+        end
     end
     return false
 end
