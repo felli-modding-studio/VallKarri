@@ -167,24 +167,20 @@ SMODS.Joker {
     loc_txt = {
         name = "Librat Pondere",
         text = {
-            "{X:dark_edition,C:white}^#1#{} Chips per {C:blue}blue team{} member in the {C:attention}VallKarri{} discord server",
-            "{X:dark_edition,C:white}^#2#{} Mult per {C:red}red team{} member in the {C:attention}VallKarri{} discord server",
-            "{C:inactive}(Currently {X:dark_edition,C:white}^#3#{C:inactive} Chips and {X:dark_edition,C:white}^#4#{C:inactive} Mult)",
-            "{V:1,S:0.5}https://discord.gg/5d3HWu88yn{}",
+            "{X:dark_edition,C:white}^#1#{} Chips for every Joker to the left",
+            "{X:dark_edition,C:white}^#2#{} Mult for every Joker to the right",
+            "{C:inactive}(Currently {X:dark_edition,C:white}^#3#{C:inactive} Chips and {X:dark_edition,C:white}^#4#{C:inactive} Mult)"
         }
     },
     valk_artist = "Scraptake",
-    config = { extra = { perblue = 0.02, perred = 0.02 } },
+    config = { extra = { chips_per = 0.1, mult_per = 0.2 } },
     loc_vars = function(self, info_queue, card)
         return {
             vars = {
-                card.ability.extra.perblue,
-                card.ability.extra.perred,
-                1 + (card.ability.extra.perblue * vallkarri.librat_vals.blue),
-                1 + (card.ability.extra.perred * vallkarri.librat_vals.red),
-                colours = {
-                    HEX("7289DA")
-                }
+                card.ability.extra.chips_per,
+                card.ability.extra.mult_per,
+                1+(card.ability.extra.chips_per*#vallkarri.cards_to_left(card)),
+                1+(card.ability.extra.mult_per*#vallkarri.cards_to_right(card)),
             }
         }
     end,
@@ -200,8 +196,8 @@ SMODS.Joker {
 
         if context.joker_main then
             return {
-                emult = 1 + (card.ability.extra.perred * vallkarri.librat_vals.red),
-                echips = 1 + (card.ability.extra.perblue * vallkarri.librat_vals.blue)
+                echips = 1+(card.ability.extra.chips_per*#vallkarri.cards_to_left(card)),
+                emult = 1+(card.ability.extra.mult_per*#vallkarri.cards_to_right(card))
             }
         end
     end

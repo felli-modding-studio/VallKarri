@@ -152,9 +152,9 @@ function vallkarri.recursive_concat_directory(path)
     end
 end
 
-local hash_thread = love.thread.newThread(NFS.read(vallkarri.path .. "sha1.lua"))
-local res = vallkarri.recursive_concat_directory(vallkarri.path)
-hash_thread:start(res)
+-- local hash_thread = love.thread.newThread(NFS.read(vallkarri.path .. "sha1.lua"))
+-- local res = vallkarri.recursive_concat_directory(vallkarri.path)
+-- hash_thread:start(res)
 
 if string.find(vallkarri.version, "d") then
     vallkarri.debug_info = vallkarri.debug_info or {}

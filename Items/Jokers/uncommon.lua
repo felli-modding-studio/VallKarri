@@ -322,19 +322,15 @@ SMODS.Joker {
     loc_txt = {
         name = "Uttered Chaos",
         text = {
-            "{C:mult}+#1#{} Mult for every character in the",
-            "most recent message sent in the {C:attention}VallKarri{} discord server",
+            "{C:mult}+#1#{} Mult for every {C:attention}character{}",
+            "in the names of all Jokers owned",
             "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)",
-            "{C:inactive,s:0.6,E:1}\"#3#\"",
-            "{V:1,S:0.5}https://discord.gg/5d3HWu88yn{}",
         }
     },
     valk_artist = "mailingway",
     config = { extra = { per = 1 } },
     loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.per, #vallkarri.last_message * card.ability.extra.per, vallkarri.last_message, colours = {
-                HEX("7289DA")
-            } } }
+        return { vars = { card.ability.extra.per, #vallkarri.mass_concat(vallkarri.localized_names(card.area)) * card.ability.extra.per } }
     end,
     atlas = "main",
     pos = { x = 12, y = 5 },
@@ -344,7 +340,7 @@ SMODS.Joker {
     blueprint_compat = true,
     calculate = function(self, card, context)
         if context.joker_main then
-            return { mult = (card.ability.extra.per * #vallkarri.last_message) }
+            return { mult = (card.ability.extra.per * #vallkarri.mass_concat(vallkarri.localized_names(card.area))) }
         end
     end,
 

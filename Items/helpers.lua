@@ -1051,3 +1051,45 @@ function vallkarri.collatz(n, debug)
     end
     return steps
 end
+
+function vallkarri.localized_names(area)
+    local names = {}
+    for _,card in pairs(area.cards) do
+        table.insert(names, localize({type="name_text",set=card.config.center.set,key=card.config.center.key}))
+    end
+    return names
+end
+
+function vallkarri.mass_concat(strings)
+    local built = ""
+
+    for _,str in ipairs(strings) do
+        built = built .. str
+    end
+
+    return built
+end
+
+function vallkarri.cards_to_left(card)
+    local area = card.area
+    local cards = {}
+    for _,c in pairs(area.cards) do
+        if c.VT and card.VT and c.VT.x < card.VT.x then
+            table.insert(cards, c)
+        end
+    end
+
+    return cards
+end
+
+function vallkarri.cards_to_right(card)
+    local area = card.area
+    local cards = {}
+    for _,c in pairs(area.cards) do
+        if c.VT and card.VT and c.VT.x > card.VT.x then
+            table.insert(cards, c)
+        end
+    end
+
+    return cards
+end

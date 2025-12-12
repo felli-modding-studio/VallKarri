@@ -70,7 +70,23 @@ SMODS.Joker {
         "special thank-you to: Scraptake, Pangaea, and Mailingway/Patchy. This mod would be nowhere without you",
         "-lily <3",
         "note: i can't stop you but, please don't share this via image/text.",
-        "i'd like each person to find it themselves."
+        "i'd like each person to find it themselves.",
+        "",
+        "update: i find myself on the brink of tears writing this but.",
+        "i, i can't force myself to work on this mod any longer",
+        "it's been really fun",
+        "lots of good times with good people",
+        "and that's not going anywhere",
+        "but i am done adding to this mod",
+        "i messed up badly",
+        "i never set a scope for vallkarri",
+        "it's always had the goal of just adding more",
+        "and now it's hurt me worse than i could have imagined",
+        "",
+        "thank you all for the good times,",
+        "for supporting me and my mod.",
+        "it had to end at some point, and this isn't the worst outcome.",
+        "anyway, get back to your run, farewell."
     }
 }
 

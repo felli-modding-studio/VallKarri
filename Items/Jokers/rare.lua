@@ -345,32 +345,28 @@ SMODS.Joker {
     loc_txt = {
         name = "The :3",
         text = {
-            "{X:mult,C:white}X#1#{} Mult if the last message in the {C:attention}VallKarri{}",
-            "discord server contains {E:1}\":3\"{}",
-            "{C:inactive,s:0.8}(#2#)",
-            "{V:1,S:0.5}https://discord.gg/5d3HWu88yn{}",
+            "{X:mult,C:white}X#1#{} Mult {C:attention}3{} times if",
+            "{C:attention}#2#{} or more hands have been played this round"
         }
     },
     valk_artist = "notmario",
     loc_vars = function(self, info_queue, card)
-        local active = string.find(vallkarri.last_message, ":3") and "Active!" or "Inactive"
-        return { vars = { card.ability.extra.mult, active, colours = {
-                HEX("7289DA")
-            } } }
+        return { vars = {card.ability.extra.mult, card.ability.extra.req} }
     end,
     demicoloncompat = true,
-    config = { extra = { mult = 5 } },
+    config = { extra = { mult = 3, req = 3} },
     blueprint_compat = true,
     calculate = function(self, card, context)
-        if (context.joker_main and string.find(vallkarri.last_message, ":3")) or context.forcetrigger then
-            return {
-                xmult = card.ability.extra.mult
-            }
+        if (context.joker_main and (G.GAME.round_resets.hands - G.GAME.current_round.hands_left) >= card.ability.extra.req) or context.forcetrigger then
+            for _=1,3 do 
+                SMODS.calculate_effect({xmult = card.ability.extra.mult}, card)
+            end
         end
     end,
     pools = { ["Kitties"] = true },
 
     -- :3
+    -- ⋮3
 
 }
 
