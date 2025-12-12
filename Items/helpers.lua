@@ -1035,3 +1035,19 @@ function vallkarri.reset_to_none()
         handname = "",
     })
 end
+
+function vallkarri.collatz(n, debug)
+    local steps = 0
+    while n ~= 1 do
+        if n % 2 == 0 then
+            n = n / 2
+        else
+            n = (n*3)+1
+        end
+        steps = steps + 1
+        if debug then
+            print("At " .. steps .. " steps, N = " .. n)
+        end
+    end
+    return steps
+end

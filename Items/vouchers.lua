@@ -309,36 +309,6 @@ SMODS.Voucher {
     requires = {"v_valk_exquisite_perkup"},
 }
 
-local draw = G.FUNCS.draw_from_deck_to_hand
-function G.FUNCS.draw_from_deck_to_hand(e)
-
-    local hand_space = e
-    local cards_to_draw = {}
-    if not hand_space then
-        local limit = G.hand.config.card_limit - #G.hand.cards
-        local unfixed = not G.hand.config.fixed_limit
-        local n = 0
-        while n < #G.deck.cards do
-            local card = G.deck.cards[#G.deck.cards-n]
-            local mod = unfixed and (card.ability.card_limit - card.ability.extra_slots_used) or 0
-            if limit - 1 + mod < 0 then
-            else    
-                limit = limit - 1 + mod
-                table.insert(cards_to_draw, card)
-                if limit <= 0 then break end
-            end
-            n = n + 1
-        end
-        hand_space = #cards_to_draw
-    end
-
-    hand_space = hand_space and hand_space > 0 and (hand_space + (G.GAME.bonus_draw or 0)) or hand_space
-    hand_space = hand_space + (G.GAME.force_bonus_draw or 0)
-
-    draw(hand_space)
-end
-
-
 SMODS.Voucher {
     key = "reptilian",
     atlas = "atlas2",
