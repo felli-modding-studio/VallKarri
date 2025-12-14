@@ -33,7 +33,8 @@ return {
             j_valk2_antithesis = {
                 name = "Antithesis",
                 text = {
-                    "{C:mult}+#1#{} Mult for every {C:attention}unscoring{} card",
+                    "Unscored cards each",
+                    "give {C:mult}+#1#{} Mult"
                 }
             }
         }

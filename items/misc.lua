@@ -37,7 +37,7 @@ VALK.UTILS.Joker {
 
     calculate = function(self, card, context)
 
-        if context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"]) then
+        if (context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"])) or context.forcetrigger then
             return {
                 mult = card.ability.extra.mult
             }
@@ -47,6 +47,7 @@ VALK.UTILS.Joker {
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
     end,
+    demicolon_compat = true
 }
 
 VALK.UTILS.Joker {
@@ -65,7 +66,7 @@ VALK.UTILS.Joker {
 
     calculate = function(self, card, context)
 
-        if context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"]) then
+        if (context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"])) or context.forcetrigger then
             return {
                 chips = card.ability.extra.chips
             }
@@ -74,7 +75,8 @@ VALK.UTILS.Joker {
     end,
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
-    end
+    end,
+    demicolon_compat = true
 }
 
 VALK.UTILS.Joker {
@@ -93,7 +95,7 @@ VALK.UTILS.Joker {
 
     calculate = function(self, card, context)
 
-        if context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"]) then
+        if (context.joker_main and context.poker_hands ~= nil and next(context.poker_hands["valk2_full_mansion"])) or context.forcetrigger then
             return {
                 xmult = card.ability.extra.mult
             }
@@ -102,5 +104,6 @@ VALK.UTILS.Joker {
     end,
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
-    end
+    end,
+    demicolon_compat = true
 }

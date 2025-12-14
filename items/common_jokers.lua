@@ -25,7 +25,7 @@ VALK.UTILS.Joker {
     loc_vars = function(self, info_queue, card)
         local n,d = SMODS.get_probability_vars(card, card.ability.extra.n, card.ability.extra.d)
         return {vars = {n,d,card.ability.extra.money}}
-    end
+    end,
 }
 
 VALK.UTILS.Joker {
@@ -44,9 +44,9 @@ VALK.UTILS.Joker {
 
 
     calculate = function(self, card, context)
-        if context.joker_main then
-            local amount = (#context.full_hand - #context.scoring_hand)
-            return { mult = card.ability.extra.per * amount }
+        if (context.individual and context.cardarea == "unscored") or context.forcetrigger then
+            return { mult = card.ability.extra.per }
         end
     end,
+    demicolon_compat = true
 }
