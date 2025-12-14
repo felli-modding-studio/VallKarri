@@ -22,6 +22,20 @@ return {
                     "contains a {C:attention}Full Mansion{}"
                 }
             },
+            j_valk2_suckit = {
+                name = "{C:red}Suck It{}",
+                text = {
+                    "Creates itself when removed",
+                    "{C:green}#1# in #2#{} chance to not come back,",
+                    "and give {C:money}$#3#{}",
+                }
+            },
+            j_valk2_antithesis = {
+                name = "Antithesis",
+                text = {
+                    "{C:mult}+#1#{} Mult for every {C:attention}unscoring{} card",
+                }
+            }
         }
     },
     misc = {

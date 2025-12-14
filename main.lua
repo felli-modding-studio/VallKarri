@@ -15,7 +15,8 @@ local _items = {
     "lib/atlas",
 
     "items/misc",
-    "items/badges"
+    "items/badges",
+    "items/common_jokers"
 }
 VALK.UTILS.load_table(_items)
 VALK.LOADING.load()
