@@ -1,15 +1,15 @@
 {
-	"id": "vallkarri",
-	"name": "VallKarri", 
+	"id": "vallkarri2",
+	"name": "Vall-karri2", 
 	"author": ["Lily Felli", "The VallKarri Discord Server"], 
-	"description": "a dumb cat's attempt at a good creation. non-essential development ended.",
-	"prefix": "valk",
+	"description": "the epitome of GEM tier game design. it's pronounced Valkyrie",
+	"prefix": "valk2",
 	"main_file": "main.lua",
 	"priority": 99999, 
 	"badge_colour": "888888",
-	"version": "1.0.0~final", 
+	"version": "0.8.4d", 
 	"dependencies": [ 
 		"Cryptlib",
-		"Steamodded (>=1.0.0~BETA-01016a)",
+		"Steamodded (>=1.0.0~BETA-1124c)"
 	]
 }
