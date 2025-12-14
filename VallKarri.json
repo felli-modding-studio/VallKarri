@@ -7,7 +7,7 @@
 	"main_file": "main.lua",
 	"priority": 99999, 
 	"badge_colour": "888888",
-	"version": "0.8.4d", 
+	"version": "0.1.0", 
 	"dependencies": [ 
 		"Cryptlib",
 		"Steamodded (>=1.0.0~BETA-1124c)"
