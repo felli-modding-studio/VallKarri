@@ -30,3 +30,27 @@ local _loading_funcs = {
 for i, v in pairs(_loading_funcs) do
     VALK.UTILS[v] = function(tbl) return VALK.UTILS.add_content(tbl, v) end
 end
+
+VALK.MISC = {
+    credited_artists = {}
+}
+VALK.UTILS.credit = function(name, type)
+    if type == "artist" then
+        VALK.MISC.credited_artists[name] = VALK.MISC.credited_artists[name] or {}
+        return ('{C:dark_edition,s:0.6,E:2}'..localize("k_art_by")..' : ' .. name .. '{}')
+    elseif type == "shader" then
+        return ('{C:dark_edition,s:0.6,E:2}'..localize("k_shader_by")..' : ' .. name .. '{}')
+    elseif type == "cat" then
+        return ('{C:dark_edition,s:0.6,E:2}'..localize("k_cat_by")..' : ' .. name .. '{}')
+    end
+end
+
+VALK.UTILS.count_kitty_tags = function()
+    local c = 0
+    for i, tag in ipairs(G.GAME.tags or {}) do
+        if tag.key == "tag_valk2_kitty" then
+            c = c + 1
+        end
+    end
+    return c
+end

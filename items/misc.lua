@@ -47,7 +47,7 @@ VALK.UTILS.Joker {
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
     end,
-    demicolon_compat = true
+    demicoloncompat = true
 }
 
 VALK.UTILS.Joker {
@@ -76,7 +76,7 @@ VALK.UTILS.Joker {
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
     end,
-    demicolon_compat = true
+    demicoloncompat = true
 }
 
 VALK.UTILS.Joker {
@@ -105,5 +105,5 @@ VALK.UTILS.Joker {
     in_pool = function()
         return G.GAME.hands["valk2_full_mansion"].played > 0
     end,
-    demicolon_compat = true
+    demicoloncompat = true
 }
