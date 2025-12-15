@@ -359,9 +359,20 @@ function VALK.LEVELING.animationless_mod_xp(mod)
     G.GAME.current_xp = math.floor(G.GAME.current_xp)
     G.GAME.required_xp = math.floor(G.GAME.required_xp)
 
-
-    while to_big(G.GAME.current_xp) >= to_big(G.GAME.required_xp) do
+    local reps = 0
+    while to_big(G.GAME.current_xp) >= to_big(G.GAME.required_xp) and reps < 1000 do
         VALK.LEVELING.mod_level(1, true)
+        reps = reps + 1
+    end
+    local power = math.min(math.floor(math.log(G.GAME.current_level, 10) - 2), 2)
+    --shitty approximation
+    while reps >= 1000 do
+        reps = 0
+        while to_big(G.GAME.current_xp) >= to_big(G.GAME.required_xp) and reps < 1000 do
+            VALK.LEVELING.mod_level(10^power, true)
+            reps = reps + 1
+        end
+        power = power + 2
     end
 end
 
@@ -451,8 +462,8 @@ local amt = 1
 VALK.UTILS.Voucher {
     order = 1,
     key = "alpha_boosterator",
-    atlas = "main",
-    pos = { x = 2, y = 7 },
+    atlas = "vouchers",
+    pos = { x = 0, y = 0 },    
     loc_txt = {
     },
     no_doe = true,
@@ -473,8 +484,8 @@ VALK.UTILS.Voucher {
 VALK.UTILS.Voucher {
     order = 2,
     key = "beta_boosterator",
-    atlas = "main",
-    pos = { x = 3, y = 7 },
+    atlas = "vouchers",
+    pos = { x = 1, y = 0 },    
     no_doe = true,
     config = { extra = { xp = 1.09 } },
 
@@ -492,8 +503,8 @@ VALK.UTILS.Voucher {
 VALK.UTILS.Voucher {
     order = 3,
     key = "gamma_boosterator",
-    atlas = "main",
-    pos = { x = 4, y = 7 },    
+    atlas = "vouchers",
+    pos = { x = 2, y = 0 },    
     no_doe = true,
     config = { extra = { xp = 1.9 } },
 
