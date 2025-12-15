@@ -19,7 +19,9 @@ local _items = {
     "items/badges",
     "items/common_jokers",
     "items/uncommon_jokers",
-    "items/tags"
+    "items/tags",
+
+    "items/leveling"
 }
 VALK.UTILS.load_table(_items)
 VALK.LOADING.load()
@@ -40,5 +42,8 @@ VALK.calculate = function(self, context)
                 end
             end
         end
+    end
+    if VALK.LEVELING.metacalc then
+        VALK.LEVELING.metacalc(context)
     end
 end

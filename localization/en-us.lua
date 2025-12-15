@@ -150,6 +150,29 @@ return {
                     VALK.UTILS.credit("Pangaea", "artist")
                 } 
             }
+        },
+        Voucher = {
+            v_valk2_alpha_boosterator = {
+                name = "Alpha XP Boosterator",
+                text = {
+                    "{X:dark_edition,C:white}X#1#{} to all XP gain",
+                    "{C:inactive}(XP Boosterators apply in the order they were obtained)",
+                }
+            },
+            v_valk2_beta_boosterator = {
+                name = "Beta XP Boosterator",
+                text = {
+                    "{X:dark_edition,C:white}^#1#{} to all XP gain",
+                    "{C:inactive}(XP Boosterators apply in the order they were obtained)",
+                }
+            },
+            v_valk2_gamma_boosterator = {
+                name = "Gamma XP Boosterator",
+                text = {
+                    "{X:dark_edition,C:white}^#1#{} to all XP gain",
+                    "{C:inactive}(XP Boosterators apply in the order they were obtained)",
+                }
+            },
         }
     },
     misc = {

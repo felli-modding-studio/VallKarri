@@ -54,3 +54,32 @@ VALK.UTILS.count_kitty_tags = function()
     end
     return c
 end
+
+function VALK.UTILS.hypercap(n, cap)
+    local initial_cap = cap
+    local initial_n = n
+    local run = to_big(n) > to_big(cap)
+    local i = 1
+    local limit = 100
+    while run and i < limit do
+        local exponent = 0.95 ^ i
+        local oldcap = cap
+        if Talisman and i > (limit / 10) then
+            local arrows = math.floor(i ^ 0.5)
+            n = to_big(n):arrow(arrows, exponent)
+            --talisman broken :wilted_rose: so it also does htis too
+            n = n ^ (0.5 ^ i)
+        else
+            n = n ^ exponent
+        end
+        cap = cap + (cap / 20)
+        i = i + 1
+
+        -- print(oldcap .. "->" .. cap)
+        -- print(n .. "^" .. exponent .. ">" .. cap)
+
+        run = to_big(n) > to_big(cap)
+    end
+
+    return math.max(n, math.min(initial_n, initial_cap))
+end
