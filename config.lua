@@ -1,3 +1,4 @@
 return {
-    metaprogression = true
+    metaprogression = true,
+    overscoring = true
 }

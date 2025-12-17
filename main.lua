@@ -14,6 +14,7 @@ local _items = {
 
     "lib/atlas",
     "lib/rarities_types",
+    "lib/overrides",
 
     "items/misc",
     "items/badges",
@@ -21,7 +22,8 @@ local _items = {
     "items/uncommon_jokers",
     "items/tags",
 
-    "items/leveling"
+    "items/leveling",
+    "items/overscoring"
 }
 VALK.UTILS.load_table(_items)
 VALK.LOADING.load()

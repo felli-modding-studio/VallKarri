@@ -1,0 +1,16 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+{n=G.UIT.T, config={text = " ", scale = 0.3*scale}},
+'''
+position = "at"
+payload = '''
+{n=G.UIT.T, config={ref_table = G.GAME.round_resets, ref_value = 'eante_disp', scale = 0.65*scale}},
+'''
+match_indent = true

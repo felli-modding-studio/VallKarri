@@ -173,6 +173,15 @@ return {
                     "{C:inactive}(XP Boosterators apply in the order they were obtained)",
                 }
             },
+        },
+        Back = {
+            b_valk2_inertia = {
+                name = "Inertia Deck",
+                text = {
+                    "{X:attention,C:white}X#1#{} Ante gain",
+                    "{C:attention}Overscoring{} is substantially harsher",
+                }
+            }
         }
     },
     misc = {
