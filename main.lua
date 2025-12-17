@@ -23,7 +23,8 @@ local _items = {
     "items/tags",
 
     "items/leveling",
-    "items/overscoring"
+    "items/overscoring",
+    "items/hand_buffs"
 }
 VALK.UTILS.load_table(_items)
 VALK.LOADING.load()
@@ -47,5 +48,22 @@ VALK.calculate = function(self, context)
     end
     if VALK.LEVELING.metacalc then
         VALK.LEVELING.metacalc(context)
+    end
+    if context.after then
+        G.E_MANAGER:add_event(Event{
+            func = function()
+                G.GAME.buff_text = ""
+                return true
+            end
+        })
+    end
+    if VALK.config.hand_buffs and context.final_scoring_step and next(G.GAME.applied_buffs) then
+        local effects = {}
+        for _,buff in ipairs(G.GAME.applied_buffs) do
+            if VALK.BUFFS.hand_buff_functions[buff.key] then
+                effects = SMODS.merge_effects({effects, VALK.BUFFS.hand_buff_functions[buff.key](buff.power, G.play.cards) or {}})
+            end
+        end
+        SMODS.calculate_effect(effects, G.deck.cards[1] or G.deck)
     end
 end
