@@ -8,8 +8,8 @@
 // YOU MUST USE THIS VARIABLE IN THE vec4 effect AT LEAST ONCE
 
 // Values of this variable:
-// self.ARGS.send_to_shader[1] = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
-// self.ARGS.send_to_shader[2] = G.TIMERS.REAL
+// self.ARGS.send_to_shader__PRESERVED_0__ = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
+// self.ARGS.send_to_shader__PRESERVED_1__ = G.TIMERS.REAL
 extern PRECISION vec2 temperature;
 
 extern PRECISION number dissolve;
@@ -56,7 +56,7 @@ float noise(vec2 p, float freq ){
 
 float falloff(float x, float lower, float upper) {
     float falloff_scale = 0.2;
-    float power = 1;
+    float power = 1.;
     float d = max(max(lower - x, x - upper), 0.0);
     return exp(-pow(d / falloff_scale, power));
 }
@@ -80,12 +80,12 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     // mults.g = strength * potency * (uv.y);
     // mults.b = strength * potency * (uv.x) * (1.-uv.y);
 
-    if (temperature.y > temperature.y*2) {
-        return vec4(0,0,0,0);
+    if (temperature.y > temperature.y*2.) {
+        return vec4(0.,0.,0.,0.);
     }
     float scroll_speed = 0.002;
-    float n = noise(vec2(texture_coords.x, texture_coords.y+(temperature.y*scroll_speed*5)),150);
-    float vraise = 0;
+    float n = noise(vec2(texture_coords.x, texture_coords.y+(temperature.y*scroll_speed*5.)),150.);
+    float vraise = 0.;
     mults.r = falloff(uv.y, vraise+(2.0/3.0), vraise+(1.0));
     mults.g = falloff(uv.y, vraise+(1.0/3.0), vraise+(2.0/3.0)) * 0.9;
     mults.b = falloff(uv.y, vraise+(0.0), vraise+(1.0/3.0));
@@ -93,7 +93,7 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     // mults.r = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*2)),150);
     // mults.g = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*7)),150);
     // mults.b = noise(vec2(scroll_speed*texture_coords.x+(temperature.y*scroll_speed*3), texture_coords.y+(temperature.y*scroll_speed*13)),150);
-    tex *= vec4(mults*(1+n),1);
+    tex *= vec4(mults*(1.+n),1.);
 
     
 
@@ -155,6 +155,6 @@ vec4 position( mat4 transform_projection, vec4 vertex_position )
     float scale = 0.2*(-0.03 - 0.3*max(0., 0.3-mid_dist))
                 *hovering*(length(mouse_offset)*length(mouse_offset))/(2. -mid_dist);
 
-    return transform_projection * vertex_position + vec4(0,0,0,scale);
+    return transform_projection * vertex_position + vec4(0.,0.,0.,scale);
 }
 #endif
