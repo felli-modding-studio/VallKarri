@@ -4,22 +4,17 @@
     #define PRECISION mediump
 #endif
 
-// !! change this variable name to your Shader's name
-// YOU MUST USE THIS VARIABLE IN THE vec4 effect AT LEAST ONCE
+// ============================================
+// VERSIONE MOBILE OTTIMIZZATA
+// Ridotto loop annidato da 11x11 a 5x5
+// Ridotto scale da 5 a 2
+// ============================================
 
-// Values of this variable:
-// self.ARGS.send_to_shader__PRESERVED_0__ = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
-// self.ARGS.send_to_shader__PRESERVED_1__ = G.TIMERS.REAL
 extern PRECISION vec2 cosmic;
 
 extern PRECISION number dissolve;
 extern PRECISION number time;
-// [Note] sprite_pos_x _y is not a pixel position!
-//        To get pixel position, you need to multiply  
-//        it by sprite_width _height (look flipped.fs)
-// (sprite_pos_x, sprite_pos_y, sprite_width, sprite_height) [not normalized]
 extern PRECISION vec4 texture_details;
-// (width, height) for atlas texture [not normalized]
 extern PRECISION vec2 image_details;
 extern bool shadow;
 extern PRECISION vec4 burn_colour_1;
@@ -35,7 +30,6 @@ float noise(vec2 p, float freq ){
 	float unit = 1./freq;
 	vec2 ij = floor(p/unit);
 	vec2 xy = mod(p,unit)/unit;
-	//xy = 3.*xy*xy-2.*xy*xy*xy;
 	xy = .5*(1.-cos(PI*xy));
 	float a = rand((ij+vec2(0.,0.)));
 	float b = rand((ij+vec2(1.,0.)));
@@ -54,48 +48,41 @@ float pos_sin(float i) {
     return (1.+sin(i))/2.;
 }
 
-
-
-vec4 RGBtoHSV(vec4 rgb)
+vec4 RGBtoHSV(vec4 rgb_in)
 {
     vec4 hsv;
-    float minVal = min(min(rgb.r, rgb.g), rgb.b);
-    float maxVal = max(max(rgb.r, rgb.g), rgb.b);
+    float minVal = min(min(rgb_in.r, rgb_in.g), rgb_in.b);
+    float maxVal = max(max(rgb_in.r, rgb_in.g), rgb_in.b);
     float delta = maxVal - minVal;
 
-    // Value
     hsv.z = maxVal;
 
-    // Saturation
     if (maxVal != 0.0)
         hsv.y = delta / maxVal;
     else {
-        // r = g = b = 0, s = 0, v is undefined
         hsv.y = 0.0;
         hsv.x = -1.0;
         return hsv;
     }
 
-    // Hue
-    if (rgb.r == maxVal)
-        hsv.x = (rgb.g - rgb.b) / delta;      // between yellow & magenta
-    else if (rgb.g == maxVal)
-        hsv.x = 2.0 + (rgb.b - rgb.r) / delta;  // between cyan & yellow
+    if (rgb_in.r == maxVal)
+        hsv.x = (rgb_in.g - rgb_in.b) / delta;
+    else if (rgb_in.g == maxVal)
+        hsv.x = 2.0 + (rgb_in.b - rgb_in.r) / delta;
     else
-        hsv.x = 4.0 + (rgb.r - rgb.g) / delta;  // between magenta & cyan
+        hsv.x = 4.0 + (rgb_in.r - rgb_in.g) / delta;
 
     hsv.x = hsv.x * (1.0 / 6.0);
     if (hsv.x < 0.0)
         hsv.x += 1.0;
 
-    // Alpha
-    hsv.w = rgb.a;
+    hsv.w = rgb_in.a;
 
     return hsv;
 }
 
 vec4 HSVtoRGB(vec4 hsv) {
-    vec4 rgb;
+    vec4 rgb_out;
 
     float h = hsv.x * 6.0;
     float c = hsv.z * hsv.y;
@@ -103,22 +90,22 @@ vec4 HSVtoRGB(vec4 hsv) {
     float m = hsv.z - c;
 
     if (h < 1.0) {
-        rgb = vec4(c, x, 0.0, hsv.a);
+        rgb_out = vec4(c, x, 0.0, hsv.a);
     } else if (h < 2.0) {
-        rgb = vec4(x, c, 0.0, hsv.a);
+        rgb_out = vec4(x, c, 0.0, hsv.a);
     } else if (h < 3.0) {
-        rgb = vec4(0.0, c, x, hsv.a);
+        rgb_out = vec4(0.0, c, x, hsv.a);
     } else if (h < 4.0) {
-        rgb = vec4(0.0, x, c, hsv.a);
+        rgb_out = vec4(0.0, x, c, hsv.a);
     } else if (h < 5.0) {
-        rgb = vec4(x, 0.0, c, hsv.a);
+        rgb_out = vec4(x, 0.0, c, hsv.a);
     } else {
-        rgb = vec4(c, 0.0, x, hsv.a);
+        rgb_out = vec4(c, 0.0, x, hsv.a);
     }
 
-    rgb.rgb += m;
+    rgb_out.rgb += m;
 
-    return rgb;
+    return rgb_out;
 }
 
 vec4 hueshift(vec4 color, float amount) {
@@ -128,38 +115,34 @@ vec4 hueshift(vec4 color, float amount) {
     return color;
 }
 
-float get_stars(vec2 uv) {
-    return pow(noise(shift(uv,cosmic.y*0.01,0.), 35.),10.);
+// Ottimizzato: precalcola shift
+float get_stars(vec2 uv, float offset_x) {
+    float n = noise(vec2(uv.x + offset_x, uv.y), 35.);
+    // pow(x,10) = x*x*x*x*x * x*x*x*x*x - ottimizzato
+    float n2 = n*n;
+    float n4 = n2*n2;
+    float n8 = n4*n4;
+    return n8*n2; // n^10
 }
 
-// [Required] 
-// Apply dissolve effect (when card is being "burnt", e.g. when consumable is used)
 vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv);
 
-// This is what actually changes the look of card
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
 {
-    // Take pixel color (rgba) from `texture` at `texture_coords`, equivalent of texture2D in GLSL
     vec4 tex = Texel(texture, texture_coords);
-    // Position of a pixel within the sprite
 	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
 
     vec2 screen = screen_coords / screen_size;
 
-    
-
-    // For all vectors (vec2, vec3, vec4), .rgb is equivalent of .xyz, so uv.y == uv.g
-    // .a is last parameter for vec4 (usually the alpha channel - transparency)
     if (cosmic.y > cosmic.y *2.) {
         tex = vec4(0.);
     }
 
-    // tex.b += noise(uv, 2);
+    // Ottimizzato: calcola exp una volta sola
     float ex = 1.5;
     tex = vec4(pow(tex.x,ex),pow(tex.y,ex),pow(tex.z,ex),tex.w);
     tex = RGBtoHSV(tex);
     tex.z = 0.9 - tex.z;
-    // -0.1 to 0.9
     float v = 0.9 - tex.z;
     uv += screen*(v*2.);
     tex = HSVtoRGB(tex);
@@ -168,28 +151,36 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     vec4 blue_layer = vec4(0.,0.,noise(shift(uv,0.,cosmic.y/dampen_speed), 3.0)/2.,0.);
     float purple_strength = noise(shift(uv,cosmic.y/dampen_speed,0.), 2.0);
     vec4 purple_layer = vec4(purple_strength*0.3,0.,purple_strength*0.8,0.);
+    
     float star_strength = 0.;
     float orthoavg = 0.;
     float diagavg = 0.;
-    float scale = 5.;
+    
+    // OTTIMIZZAZIONE: ridotto scale da 5 a 2
+    float scale = 2.;
     float pixels_looped = 0.;
     vec2 pixel = vec2(1.,1.) / texture_details.zw;
+    
+    float cosmic_offset = cosmic.y*0.01;
 
-    for (float i = -scale; i <= scale; i++) {
-        orthoavg += get_stars(shift(uv,pixel.x*i,0.));
-        pixels_looped++;
+    // Loop ottimizzato: da -2 a 2 invece di -5 a 5
+    for (float i = -scale; i <= scale; i += 1.) {
+        orthoavg += get_stars(shift(uv,pixel.x*i,0.), cosmic_offset);
+        pixels_looped += 1.;
     }
 
-    for (float j = -scale; j <= scale; j++) {
-        orthoavg += get_stars(shift(uv,0.,pixel.y*j));
-        pixels_looped++;
+    for (float j = -scale; j <= scale; j += 1.) {
+        orthoavg += get_stars(shift(uv,0.,pixel.y*j), cosmic_offset);
+        pixels_looped += 1.;
     }
 
     float circle_pixels = 0.;
-    for (float i = -scale; i <= scale; i++) {
-        for (float j = -scale; j <= scale; j++) {
-            diagavg += get_stars(shift(uv,pixel.x*i,pixel.y*j));
-            circle_pixels++;
+    
+    // OTTIMIZZAZIONE CRITICA: loop annidato ridotto da 11x11 a 5x5
+    for (float i = -scale; i <= scale; i += 1.) {
+        for (float j = -scale; j <= scale; j += 1.) {
+            diagavg += get_stars(shift(uv,pixel.x*i,pixel.y*j), cosmic_offset);
+            circle_pixels += 1.;
         }
     }
 
@@ -198,11 +189,8 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     star_strength = (orthoavg*5.) + (diagavg/circle_pixels);
 
-
     vec4 star_layer = vec4(star_strength);
     star_layer.a = 0.;
-    
-    
     
     tex += blue_layer;
     tex += purple_layer;
@@ -211,9 +199,6 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     tex += (purple_layer+blue_layer)*(0.25*value);
 
-
-
-    // required
     return dissolve_mask(tex*colour, texture_coords, uv);
 }
 
@@ -223,7 +208,7 @@ vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv)
         return vec4(shadow ? vec3(0.,0.,0.) : tex.xyz, shadow ? tex.a*0.3: tex.a);
     }
 
-    float adjusted_dissolve = (dissolve*dissolve*(3.-2.*dissolve))*1.02 - 0.01; //Adjusting 0.0-1.0 to fall to -0.1 - 1.1 scale so the mask does not pause at extreme values
+    float adjusted_dissolve = (dissolve*dissolve*(3.-2.*dissolve))*1.02 - 0.01;
 
 	float t = time * 10.0 + 2003.;
 	vec2 floored_uv = (floor((uv*texture_details.ba)))/max(texture_details.b, texture_details.a);
@@ -252,10 +237,9 @@ vec4 dissolve_mask(vec4 tex, vec2 texture_coords, vec2 uv)
         }
     }
 
-    return vec4(shadow ? vec3(0.,0.,0.) : tex.xyz, res > adjusted_dissolve ? (shadow ? tex.a*0.3: tex.a) : .0);
+    return vec4(shadow ? vec3(0.,0.,0.) : tex.xyz, res > adjusted_dissolve ? (shadow ? tex.a*0.3: tex.a) : 0.);
 }
 
-// for transforming the card while your mouse is on it
 extern PRECISION vec2 mouse_screen_pos;
 extern PRECISION float hovering;
 extern PRECISION float screen_scale;

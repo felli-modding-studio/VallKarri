@@ -8,8 +8,8 @@
 // YOU MUST USE THIS VARIABLE IN THE vec4 effect AT LEAST ONCE
 
 // Values of this variable:
-// self.ARGS.send_to_shader[1] = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
-// self.ARGS.send_to_shader[2] = G.TIMERS.REAL
+// self.ARGS.send_to_shader__PRESERVED_0__ = math.min(self.VT.r*3, 1) + (math.sin(G.TIMERS.REAL/28) + 1) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt
+// self.ARGS.send_to_shader__PRESERVED_1__ = G.TIMERS.REAL
 extern PRECISION vec2 mystical;
 
 extern PRECISION number dissolve;
@@ -174,6 +174,6 @@ vec4 position( mat4 transform_projection, vec4 vertex_position )
     float scale = 0.2*(-0.03 - 0.3*max(0., 0.3-mid_dist))
                 *hovering*(length(mouse_offset)*length(mouse_offset))/(2. -mid_dist);
 
-    return transform_projection * vertex_position + vec4(0,0,0,scale);
+    return transform_projection * vertex_position + vec4(0.,0.,0.,scale);
 }
 #endif

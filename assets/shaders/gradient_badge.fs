@@ -11,7 +11,7 @@ extern MY_HIGHP_OR_MEDIUMP vec2 uibox_size;
 extern MY_HIGHP_OR_MEDIUMP float screen_scale;
 
 float avg(float a, float b) {
-    return (a+b)/2;
+    return (a+b)/2.;
 }
 
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
@@ -25,8 +25,8 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     // number high = max(tex.r, max(tex.g, tex.b));
 	// number delta = high-low -0.1;
 
-    if (time > 2*time) {
-        tex.r = 1;
+    if (time > 2.*time) {
+        tex.r = 1.;
     }
 
     // constants
@@ -35,7 +35,7 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     float freq = 3.14159/15.;
     float mini = 0.8;
     float maxi = 1.2;
-    vec3 goal = vec3(1, 185. / 255., 34. / 255.);
+    vec3 goal = vec3(1., 185. / 255., 34. / 255.);
     goal *= 1.2;
 
     //calculations
@@ -45,7 +45,7 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     float factor_r = (sintime*goal.r); // i love being biased!
     float factor_g = (sintime*goal.g);
     float factor_b = (sintime*goal.b);
-    tex *= 2; //true?
+    tex *= 2.; //true?
     tex.r *= factor_r;
     tex.g *= factor_g;
     tex.b *= factor_b;
