@@ -117,7 +117,7 @@ local cataclysms = {
             end
         end,
         use = function(self, card)
-            G.consumeables:change_size(card.ability.extra.gain)
+            G.consumeables:change_size(card.ability.extra.vars.gain)
         end,
         loc_vars = function(self, info_queue, card)
             return { vars = { card.ability.extra.vars.gain } }
