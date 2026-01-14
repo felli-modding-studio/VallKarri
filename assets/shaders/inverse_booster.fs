@@ -60,7 +60,7 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     MY_HIGHP_OR_MEDIUMP number high = max(tex.r, max(tex.g, tex.b));
 	MY_HIGHP_OR_MEDIUMP number delta = max(high-low, low*0.7);
     // lily change
-    int factor = 6;
+    float factor = 6.;
     delta = pow(delta*factor, 1.5) / factor;
     // end lily change
     MY_HIGHP_OR_MEDIUMP number fac = 0.8 + 0.9*sin(13.*uv.x+5.32*uv.y + inverse_booster.r*12. + cos(inverse_booster.r*5.3 + uv.y*4.2 - uv.x*4.));
@@ -80,10 +80,10 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     // lily change
     float desat = 0.8;
-    tex = vec4(1.05*desat,0.75*desat,1.25*desat,1) * tex;
+    tex = vec4(1.05*desat,0.75*desat,1.25*desat,1.) * tex;
 
     float total = (tex.r+tex.g+tex.b)/3.0;
-    float factor2 = 2;
+    float factor2 = 2.;
     float power = 1.25;
     tex.rgb *= factor2;
     tex.r = pow(tex.r, power);
@@ -110,6 +110,6 @@ vec4 position( mat4 transform_projection, vec4 vertex_position )
     MY_HIGHP_OR_MEDIUMP float scale = 0.2*(-0.03 - 0.3*max(0., 0.3-mid_dist))
                 *hovering*(length(mouse_offset)*length(mouse_offset))/(2. -mid_dist);
 
-    return transform_projection * vertex_position + vec4(0,0,0,scale);
+    return transform_projection * vertex_position + vec4(0.,0.,0.,scale);
 }
 #endif
